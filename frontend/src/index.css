@@ -1,0 +1,213 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
+
+/* 
+  Tailwind v4 uses the @theme block to register CSS variables into its utility system.
+  Your IDE might show a yellow warning here, but this is MANDATORY for the colors to work.
+*/
+@theme {
+  --color-primary-50: #020617;
+  --color-primary-100: #1e3a8a;
+  --color-primary-500: #3b82f6;
+  --color-primary-600: #2563eb;
+  --color-primary-700: #1d4ed8;
+  --color-primary-900: #eff6ff;
+
+  --color-secondary-50: #022c22;
+  --color-secondary-100: #064e3b;
+  --color-secondary-500: #10b981;
+  --color-secondary-600: #059669;
+  --color-secondary-700: #34d399;
+
+  --color-accent-50: #451a03;
+  --color-accent-100: #78350f;
+  --color-accent-500: #f59e0b;
+  --color-accent-600: #fbbf24;
+  --color-accent-700: #fef3c7;
+
+  --color-slate-50: #020617;   /* True Black/Deep Navy background */
+  --color-slate-100: #0f172a;  /* Surface */
+  --color-slate-200: #1e293b;  /* Border/Sub-surface */
+  --color-slate-300: #334155;  /* Muted Text */
+  --color-slate-400: #94a3b8;  /* Dim Text */
+  --color-slate-500: #cbd5e1;  /* Standard Text */
+  --color-slate-600: #e2e8f0;  /* Bright Text */
+  --color-slate-700: #f1f5f9;  /* Heading Text */
+  --color-slate-800: #f8fafc;  /* Max Contrast */
+  --color-slate-900: #ffffff;  /* Final White */
+
+  --color-error-50: #450a0a;
+  --color-error-500: #ef4444;
+  --color-error-600: #f87171;
+
+  --font-family-sans: "Inter", system-ui, sans-serif;
+}
+
+@layer base {
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: var(--color-slate-500);
+    background-color: var(--color-slate-50);
+    font-family: var(--font-family-sans);
+  }
+}
+
+@layer components {
+  /* Buttons */
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: white;
+    background-color: var(--color-primary-600);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    text-decoration: none;
+  }
+  .btn-primary:hover {
+    background-color: var(--color-primary-500);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+  }
+  .btn-primary:active {
+    transform: translateY(0);
+  }
+  
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: white;
+    background-color: var(--color-slate-200);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 0.5rem;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+  .btn-secondary:hover {
+    background-color: var(--color-slate-300);
+    color: var(--color-slate-50);
+  }
+
+  /* Cards */
+  .card {
+    background-color: var(--color-slate-100);
+    border-radius: 1rem;
+    border: 1px solid var(--color-slate-200);
+    box-shadow: 0 8px 24px -12px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+  .card:hover {
+    border-color: var(--color-slate-300);
+    box-shadow: 0 12px 32px -12px rgba(0, 0, 0, 1);
+  }
+
+  /* Inputs */
+  .input-field {
+    display: block;
+    width: 100%;
+    padding: 0.625rem 0.875rem;
+    border: 1px solid var(--color-slate-200);
+    border-radius: 0.625rem;
+    background-color: var(--color-slate-50);
+    font-size: 0.875rem;
+    color: var(--color-slate-800);
+    transition: all 0.2s;
+  }
+  .input-field:focus {
+    outline: none;
+    border-color: var(--color-primary-500);
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+  }
+  .input-field::placeholder {
+    color: var(--color-slate-400);
+  }
+
+  /* Badges */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.125rem 0.625rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+  }
+  .badge-green {
+    background-color: var(--color-secondary-50);
+    color: var(--color-secondary-700);
+    border: 1px solid var(--color-secondary-100);
+  }
+  .badge-red {
+    background-color: var(--color-error-50);
+    color: var(--color-error-600);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+  }
+  .badge-yellow {
+    background-color: var(--color-accent-50);
+    color: var(--color-accent-600);
+    border: 1px solid var(--color-accent-100);
+  }
+  .badge-blue {
+    background-color: var(--color-primary-50);
+    color: var(--color-primary-500);
+    border: 1px solid var(--color-primary-100);
+  }
+
+  /* Glassmorphism utility */
+  .glass {
+    background-color: rgba(15, 23, 42, 0.7);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-slate-50);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-slate-200);
+  border-radius: 5px;
+  border: 2px solid var(--color-slate-50);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-slate-300);
+}
+
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.3s ease-out forwards;
+}
