@@ -1,6 +1,3 @@
-import { useEffect, useMemo, useState } from 'react';
-import { useAuth } from '../AuthContext';
-import type { AIInsight, InventoryItem, OrderSummary, WholesalerProduct, Cart } from '../api';
 import { 
   getRetailerInsights, 
   getRetailerInventory, 
@@ -14,10 +11,24 @@ import {
   updateOrderStatus,
   getProducts,
   addInventoryItem,
-  initiatePayment,
+  updateInventoryItem,
   payOutstanding,
-  getPaymentHistory
+  getPaymentHistory,
+  createSale,
+  getSalesHistory,
 } from '../api';
+import type { 
+  AIInsight, 
+  InventoryItem, 
+  OrderSummary, 
+  WholesalerProduct, 
+  Cart,
+  Sale,
+  CreateSaleItemPayload
+} from '../api';
+import { useEffect, useMemo, useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../AuthContext';
 
 interface DashboardState<T> {
   data: T;
@@ -55,13 +66,27 @@ function useDashboardData<T>(initial: T, loader: () => Promise<T>): DashboardSta
 
 export function RetailerDashboard() {
   const { accessToken } = useAuth();
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'marketplace' | 'cart' | 'inventory' | 'ledger'>('dashboard');
+  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'marketplace' | 'cart' | 'inventory' | 'ledger' | 'sales'>('dashboard');
+  const [salesSubTab, setSalesSubTab] = useState<'record' | 'history'>('record');
   const [showAddInventory, setShowAddInventory] = useState(false);
   const [addingItem, setAddingItem] = useState(false);
-  const [showPaymentModal, setShowPaymentModal] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState<'pay_now' | 'partial' | 'credit'>('pay_now');
-  const [upfrontAmount, setUpfrontAmount] = useState<string>('');
-  const [initiating, setInitiating] = useState(false);
+  const [editingInventoryId, setEditingInventoryId] = useState<number | null>(null);
+  const [editingThresholdValue, setEditingThresholdValue] = useState<string>('');
+  const [updatingThreshold, setUpdatingThreshold] = useState(false);
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.pathname === '/sales/record') {
+      setActiveTab('sales');
+      setSalesSubTab('record');
+    } else if (location.pathname === '/sales/history') {
+      setActiveTab('sales');
+      setSalesSubTab('history');
+    } else if (location.pathname.startsWith('/retailer/dashboard')) {
+      setActiveTab('dashboard');
+    }
+  }, [location.pathname]);
 
   const inventoryLoader = useMemo(
     () => () => (accessToken ? getRetailerInventory(accessToken) : Promise.resolve<InventoryItem[]>([])),
@@ -91,6 +116,36 @@ export function RetailerDashboard() {
       setAddingItem(false);
     }
   }
+
+  const handleUpdateThreshold = async (inventoryId: number, newLevel: number) => {
+    if (!accessToken) return;
+    setUpdatingThreshold(true);
+    try {
+      await updateInventoryItem(accessToken, inventoryId, { reorder_level: newLevel });
+      inventory.mutate();
+      setEditingInventoryId(null);
+    } catch (e: any) {
+      alert("Failed to update threshold: " + e.message);
+    } finally {
+      setUpdatingThreshold(false);
+    }
+  }
+
+  const handleRecordSale = async () => {
+    if (!accessToken || saleItems.length === 0) return;
+    setIsRecordingSale(true);
+    try {
+      const res = await createSale(accessToken, { items: saleItems });
+      setShowInvoice(res);
+      setSaleItems([]);
+      sales.mutate();
+      inventory.mutate();
+    } catch (e: any) {
+      alert("Failed to record sale: " + e.message);
+    } finally {
+      setIsRecordingSale(false);
+    }
+  }
   const ordersLoader = useMemo(
     () => () => (accessToken ? getRetailerOrders(accessToken) : Promise.resolve<OrderSummary[]>([])),
     [accessToken],
@@ -109,6 +164,16 @@ export function RetailerDashboard() {
   const orders = useDashboardData<OrderSummary[]>([], ordersLoader);
   const marketplace = useDashboardData<WholesalerProduct[]>([], marketplaceLoader);
   const cart = useDashboardData<Cart>({ id: 0, status: 'active', items: [] }, cartLoader);
+
+  const salesLoader = useMemo(
+    () => () => (accessToken ? getSalesHistory(accessToken) : Promise.resolve<Sale[]>([])),
+    [accessToken],
+  );
+  const sales = useDashboardData<Sale[]>([], salesLoader);
+
+  const [saleItems, setSaleItems] = useState<CreateSaleItemPayload[]>([]);
+  const [isRecordingSale, setIsRecordingSale] = useState(false);
+  const [showInvoice, setShowInvoice] = useState<Sale | null>(null);
 
   const [quantities, setQuantities] = useState<{ [key: number]: number }>({});
   const [newInventoryItem, setNewInventoryItem] = useState({
@@ -129,7 +194,7 @@ export function RetailerDashboard() {
 
   const lowStockItems = useMemo(
     () =>
-      inventory.data.filter((item) => item.reorder_level > 0 && item.current_stock <= item.reorder_level).slice(0, 5),
+      inventory.data.filter((item) => parseFloat(item.reorder_level.toString()) > 0 && parseFloat(item.current_stock.toString()) <= parseFloat(item.reorder_level.toString())).slice(0, 5),
     [inventory.data],
   );
 
@@ -174,36 +239,8 @@ export function RetailerDashboard() {
   }
 
   const handleCheckout = () => {
-    setShowPaymentModal(true);
+    navigate('/checkout/payment');
   };
-
-  const handlePaymentInitiation = async () => {
-    if (!accessToken) return;
-    setInitiating(true);
-    try {
-      const payload = {
-        payment_method: paymentMethod,
-        delivery_address: "Default Retailer Address",
-        upfront_amount: paymentMethod === 'partial' ? parseFloat(upfrontAmount) : undefined
-      };
-
-      if (paymentMethod === 'partial' && (!upfrontAmount || parseFloat(upfrontAmount) <= 0 || parseFloat(upfrontAmount) > cartTotal)) {
-        alert("Please enter a valid upfront amount (must be positive and not exceed total cart value)");
-        return;
-      }
-
-      await initiatePayment(accessToken, payload);
-      alert("Payment initiated and orders placed successfully!");
-      setShowPaymentModal(false);
-      cart.mutate();
-      orders.mutate();
-      setActiveTab('dashboard');
-    } catch (e: any) {
-      alert(e.message);
-    } finally {
-      setInitiating(false);
-    }
-  }
 
   const handleMarkAsReceived = async (orderId: number) => {
     if (!accessToken) return;
@@ -247,37 +284,44 @@ export function RetailerDashboard() {
         </div>
         <div className="mt-4 flex md:mt-0 md:ml-4 space-x-2">
           <button
-            onClick={() => setActiveTab('dashboard')}
+            onClick={() => navigate('/retailer/dashboard')}
             className={`px-4 py-2 text-sm font-bold rounded-xl transition-all ${activeTab === 'dashboard' ? 'bg-primary-600 text-white shadow-lg shadow-primary-500/20' : 'glass text-slate-400 border-none hover:bg-white/5'}`}
           >
             Dashboard
           </button>
           <button
-            onClick={() => setActiveTab('marketplace')}
+            onClick={() => { setActiveTab('marketplace'); navigate('/retailer/dashboard'); }}
             className={`px-4 py-2 text-sm font-bold rounded-xl transition-all ${activeTab === 'marketplace' ? 'bg-primary-600 text-white shadow-lg shadow-primary-500/20' : 'glass text-slate-400 border-none hover:bg-white/5'}`}
           >
             Marketplace
           </button>
           <button
-            onClick={() => setActiveTab('cart')}
+            onClick={() => { setActiveTab('cart'); navigate('/retailer/dashboard'); }}
             className={`px-4 py-2 text-sm font-bold rounded-xl transition-all flex items-center ${activeTab === 'cart' ? 'bg-primary-600 text-white shadow-lg shadow-primary-500/20' : 'glass text-slate-400 border-none hover:bg-white/5'}`}
           >
             <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
             Cart ({cart.data.items.length})
           </button>
           <button
-            onClick={() => setActiveTab('inventory')}
+            onClick={() => { setActiveTab('inventory'); navigate('/retailer/dashboard'); }}
             className={`px-4 py-2 text-sm font-bold rounded-xl transition-all flex items-center ${activeTab === 'inventory' ? 'bg-primary-600 text-white shadow-lg shadow-primary-500/20' : 'glass text-slate-400 border-none hover:bg-white/5'}`}
           >
             <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
             Inventory
           </button>
           <button
-            onClick={() => setActiveTab('ledger')}
+            onClick={() => { setActiveTab('ledger'); navigate('/retailer/dashboard'); }}
             className={`px-4 py-2 text-sm font-bold rounded-xl transition-all flex items-center ${activeTab === 'ledger' ? 'bg-primary-600 text-white shadow-lg shadow-primary-500/20' : 'glass text-slate-400 border-none hover:bg-white/5'}`}
           >
             <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
             Ledger
+          </button>
+          <button
+            onClick={() => navigate('/sales/record')}
+            className={`px-4 py-2 text-sm font-bold rounded-xl transition-all flex items-center ${activeTab === 'sales' ? 'bg-primary-600 text-white shadow-lg shadow-primary-500/20' : 'glass text-slate-400 border-none hover:bg-white/5'}`}
+          >
+            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            Sales
           </button>
         </div>
       </div>
@@ -658,10 +702,48 @@ export function RetailerDashboard() {
                               <div className="text-sm font-black text-slate-800">{item.current_stock} <span className="text-[10px] text-slate-500 font-bold lowercase">{item.product.unit}</span></div>
                             </td>
                             <td className="px-6 py-5 whitespace-nowrap text-[10px] text-slate-400 font-black uppercase tracking-widest">
-                              {item.reorder_level} {item.product.unit}
+                              {editingInventoryId === item.id ? (
+                                <div className="flex items-center space-x-2">
+                                  <input 
+                                    type="number"
+                                    className="w-16 bg-slate-50 border border-primary-500/20 rounded-lg px-2 py-1 text-sm font-black text-slate-800 focus:ring-1 focus:ring-primary-500 outline-none"
+                                    value={editingThresholdValue}
+                                    onChange={(e) => setEditingThresholdValue(e.target.value)}
+                                    autoFocus
+                                    onKeyDown={(e) => {
+                                      if (e.key === 'Enter') handleUpdateThreshold(item.id, parseInt(editingThresholdValue));
+                                      if (e.key === 'Escape') setEditingInventoryId(null);
+                                    }}
+                                  />
+                                  <button 
+                                    onClick={() => handleUpdateThreshold(item.id, parseInt(editingThresholdValue))}
+                                    disabled={updatingThreshold}
+                                    className="p-1 text-emerald-500 hover:text-emerald-400 transition-colors"
+                                  >
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
+                                  </button>
+                                  <button 
+                                    onClick={() => setEditingInventoryId(null)}
+                                    className="p-1 text-red-500 hover:text-red-400 transition-colors"
+                                  >
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                  </button>
+                                </div>
+                              ) : (
+                                <div 
+                                  className="flex items-center space-x-2 cursor-pointer group/threshold"
+                                  onClick={() => {
+                                    setEditingInventoryId(item.id);
+                                    setEditingThresholdValue(item.reorder_level.toString());
+                                  }}
+                                >
+                                  <span>{item.reorder_level} {item.product.unit}</span>
+                                  <svg className="w-3 h-3 opacity-0 group-hover/threshold:opacity-100 transition-opacity text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                                </div>
+                              )}
                             </td>
                             <td className="px-6 py-5 whitespace-nowrap">
-                              {item.current_stock <= item.reorder_level ? (
+                              {parseFloat(item.current_stock.toString()) <= parseFloat(item.reorder_level.toString()) ? (
                                 <span className="badge badge-red bg-red-500/10 text-red-400 border border-red-500/20 animate-pulse-slow font-black">CRITICAL</span>
                               ) : (
                                 <span className="badge badge-green bg-secondary-500/10 text-secondary-500 border border-secondary-500/20 font-black">OPTIMAL</span>
@@ -742,7 +824,7 @@ export function RetailerDashboard() {
                               alert(`Settlement successful! Discount applied: ₹${res.discount_applied}`);
                               orders.mutate();
                             } else {
-                              alert("No pending payment found for this order.");
+                              alert("Already settled or no payment record found.");
                             }
                           } catch (e: any) {
                             alert(e.message);
@@ -762,6 +844,159 @@ export function RetailerDashboard() {
         </div>
       )}
 
+      {activeTab === 'sales' && (
+        <div className="space-y-8 animate-fade-in">
+          <div className="flex justify-between items-end mb-8">
+            <div className="flex bg-slate-100 p-1.5 rounded-2xl w-fit shadow-inner">
+              <button 
+                onClick={() => navigate('/sales/record')}
+                className={`px-8 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${salesSubTab === 'record' ? 'bg-white text-primary-600 shadow-xl' : 'text-slate-400 hover:text-slate-600'}`}
+              >
+                Record Sale
+              </button>
+              <button 
+                onClick={() => navigate('/sales/history')}
+                className={`px-8 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${salesSubTab === 'history' ? 'bg-white text-primary-600 shadow-xl' : 'text-slate-400 hover:text-slate-600'}`}
+              >
+                Sales History
+              </button>
+            </div>
+            {salesSubTab === 'record' && saleItems.length > 0 && (
+              <button 
+                onClick={handleRecordSale}
+                disabled={isRecordingSale}
+                className="bg-emerald-500 text-white font-black uppercase text-[10px] tracking-widest px-8 py-4 rounded-xl hover:bg-emerald-600 transition-all shadow-xl shadow-emerald-500/20 flex items-center disabled:opacity-50"
+              >
+                {isRecordingSale ? 'Processing...' : 'Generate Bill'}
+                <svg className="w-4 h-4 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+              </button>
+            )}
+          </div>
+
+          {salesSubTab === 'record' ? (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div className="rounded-[2.5rem] p-10 shadow-2xl border border-slate-700" style={{background: '#1e293b'}}>
+                <h4 className="text-xl font-black text-white uppercase tracking-tighter mb-8">Item Entry</h4>
+                <div className="space-y-6">
+                  <div>
+                    <label className="block text-[11px] font-black text-slate-300 uppercase tracking-widest mb-4">Select Product</label>
+                    <select 
+                      className="w-full rounded-2xl px-6 py-4 text-sm font-bold focus:ring-2 focus:ring-primary-500"
+                      style={{background: '#334155', color: 'white', border: '1px solid #475569'}}
+                      id="sale-product-select"
+                      defaultValue="0"
+                    >
+                      <option value="0" disabled>Select from inventory...</option>
+                      {inventory.data.map(item => (
+                        <option key={item.id} value={item.product.id}>{item.product.name} ({item.current_stock} available)</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-black text-slate-300 uppercase tracking-widest mb-4">Quantity Sold</label>
+                    <input 
+                      type="number"
+                      className="w-full rounded-2xl px-6 py-4 text-sm font-bold focus:ring-2 focus:ring-primary-500"
+                      style={{background: '#334155', color: 'white', border: '1px solid #475569'}}
+                      placeholder="Enter quantity..."
+                      id="sale-qty-input"
+                    />
+                  </div>
+                  <button 
+                    onClick={() => {
+                      const pSelect = document.getElementById('sale-product-select') as HTMLSelectElement;
+                      const qInput = document.getElementById('sale-qty-input') as HTMLInputElement;
+                      const pid = parseInt(pSelect.value);
+                      const qty = parseFloat(qInput.value);
+                      if (pid > 0 && qty > 0) {
+                        setSaleItems([...saleItems, { product: pid, quantity_sold: qty }]);
+                        qInput.value = '';
+                      }
+                    }}
+                    className="w-full text-white font-black uppercase text-[10px] tracking-widest py-4 rounded-xl transition-all shadow-xl" style={{background: '#2563eb'}}
+                  >
+                    Add to Bill
+                  </button>
+                </div>
+              </div>
+
+              <div className="rounded-[2.5rem] p-10 shadow-2xl relative overflow-hidden" style={{background: '#0f172a'}}>
+                <div className="absolute top-0 right-0 w-64 h-64 bg-primary-500/10 rounded-full blur-3xl -mr-32 -mt-32"></div>
+                <h4 className="text-xl font-black text-white uppercase tracking-tighter mb-8 flex items-center">
+                  Bill Preview
+                  <span className="ml-4 px-3 py-1 bg-white/10 rounded-full text-[10px] tracking-widest font-black">{saleItems.length} ITEMS</span>
+                </h4>
+                <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+                  {saleItems.length === 0 ? (
+                    <div className="py-20 text-center">
+                      <p className="text-slate-400 text-sm font-bold uppercase tracking-widest italic opacity-60">No items added to current session</p>
+                    </div>
+                  ) : (
+                    saleItems.map((si, idx) => {
+                      const p = inventory.data.find(inv => inv.product.id === si.product)?.product;
+                      return (
+                        <div key={idx} className="flex justify-between items-center bg-white/5 p-5 rounded-2xl border border-white/5">
+                          <div>
+                            <div className="text-sm font-black text-white uppercase tracking-tight">{p?.name || 'Unknown Product'}</div>
+                            <div className="text-[10px] font-black text-slate-300 tracking-widest mt-1">QTY: {si.quantity_sold}</div>
+                          </div>
+                          <button 
+                            onClick={() => setSaleItems(saleItems.filter((_, i) => i !== idx))}
+                            className="text-red-400 hover:text-red-500 p-2"
+                          >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                          </button>
+                        </div>
+                      );
+                    })
+                  )}
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="bg-white/50 backdrop-blur-xl rounded-[2.5rem] shadow-2xl shadow-slate-200/50 border border-white overflow-hidden animate-fade-in">
+              <table className="min-w-full divide-y divide-slate-100">
+                <thead className="bg-slate-50/50">
+                  <tr>
+                    <th className="px-10 py-6 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">Sale ID</th>
+                    <th className="px-10 py-6 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">Date</th>
+                    <th className="px-10 py-6 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">Items</th>
+                    <th className="px-10 py-6 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">Invoice #</th>
+                    <th className="px-10 py-6 text-right text-[10px] font-black text-slate-400 uppercase tracking-widest">Action</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-50">
+                  {sales.loading ? (
+                    <tr><td colSpan={5} className="px-10 py-20 text-center font-bold text-slate-400">Loading history...</td></tr>
+                  ) : sales.data.length === 0 ? (
+                    <tr><td colSpan={5} className="px-10 py-20 text-center font-bold text-slate-400 uppercase tracking-widest italic opacity-50">No sales transactions recorded yet</td></tr>
+                  ) : (
+                    sales.data.map(sale => (
+                      <tr key={sale.id} className="hover:bg-slate-50/50 transition-colors group">
+                        <td className="px-10 py-6 whitespace-nowrap text-sm font-black text-slate-800">#{sale.id}</td>
+                        <td className="px-10 py-6 whitespace-nowrap text-sm font-bold text-slate-500">{new Date(sale.sale_date).toLocaleDateString()}</td>
+                        <td className="px-10 py-6 whitespace-nowrap text-sm font-black text-slate-800">{sale.total_items} UNITS</td>
+                        <td className="px-10 py-6 whitespace-nowrap">
+                          <span className="badge badge-blue bg-primary-500/10 text-primary-600 border border-primary-500/10 text-[10px] font-black uppercase">{sale.invoice_number}</span>
+                        </td>
+                        <td className="px-10 py-6 whitespace-nowrap text-right">
+                          <button 
+                            onClick={() => setShowInvoice(sale)}
+                            className="text-[10px] font-black uppercase tracking-widest text-primary-500 hover:text-primary-600 underline underline-offset-4"
+                          >
+                            View Invoice
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Add Inventory Modal */}
       {showAddInventory && (
         <div className="fixed inset-0 z-[100] overflow-y-auto bg-slate-50/80 backdrop-blur-xl animate-fade-in">
@@ -775,14 +1010,14 @@ export function RetailerDashboard() {
                   <h3 className="text-4xl font-black text-slate-800 uppercase tracking-tighter mb-3">Asset Registration</h3>
                   <p className="text-sm text-slate-400 font-medium italic">Manually log physical inventory for AI synchronization and supply chain tracking.</p>
                 </div>
-                <button 
+                <button
                   onClick={() => setShowAddInventory(false)}
                   className="p-4 bg-white/5 rounded-full text-slate-500 hover:text-white hover:bg-red-500/20 transition-all border border-white/5 group"
                 >
                   <svg className="w-6 h-6 group-hover:rotate-90 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
               </div>
-              
+
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Product Selection Section */}
                 <div className="space-y-6">
@@ -860,91 +1095,67 @@ export function RetailerDashboard() {
         </div>
       )}
 
-      {/* Payment Selection Modal */}
-      {showPaymentModal && (
-        <div className="fixed inset-0 z-[150] overflow-y-auto bg-slate-50/90 backdrop-blur-2xl animate-fade-in flex items-center justify-center p-6">
-          <div className="bg-slate-100 rounded-[3.5rem] shadow-[0_64px_128px_-24px_rgba(0,0,0,0.5)] max-w-4xl w-full p-16 animate-scale-in relative border border-white/5">
-            <div className="flex justify-between items-start mb-12">
+      {/* Invoice Modal */}
+      {showInvoice && (
+        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-md animate-fade-in" onClick={() => setShowInvoice(null)}>
+          <div 
+            className="rounded-[2rem] shadow-[0_32px_64px_-12px_rgba(0,0,0,0.8)] max-w-lg w-full animate-scale-in overflow-y-auto"
+            style={{background: '#1e293b', maxHeight: '90vh', border: '1px solid rgba(255,255,255,0.08)'}}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className="p-8 pb-0 flex justify-between items-start">
               <div>
-                <h3 className="text-4xl font-black text-slate-800 uppercase tracking-tighter mb-4">Capital Deployment</h3>
-                <p className="text-slate-400 font-medium italic text-lg leading-relaxed">Select specialized credit instruments for strategic deployment.</p>
+                <h3 className="text-2xl font-black text-white uppercase tracking-tighter mb-1">Tax Invoice</h3>
+                <p className="text-[10px] font-black uppercase tracking-widest" style={{color: '#64748b'}}>{showInvoice.invoice_number}</p>
               </div>
-              <button 
-                onClick={() => setShowPaymentModal(false)}
-                className="w-14 h-14 bg-white/5 rounded-full flex items-center justify-center text-slate-400 hover:bg-red-500/20 hover:text-white transition-all border border-white/5"
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-              </button>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-              {[
-                { id: 'pay_now', title: 'Pay Now', desc: 'Instant settlement with immediate priority.', icon: '⚡' },
-                { id: 'partial', title: 'Partial', desc: 'Secure line with upfront capital buffer.', icon: '🌓' },
-                { id: 'credit', title: 'Credit', desc: '90-day liquidity corridor with discount tiers.', icon: '💎' }
-              ].map(method => (
-                <div 
-                  key={method.id}
-                  onClick={() => setPaymentMethod(method.id as any)}
-                  className={`cursor-pointer rounded-[2.5rem] p-8 border-2 transition-all group relative overflow-hidden ${paymentMethod === method.id ? 'border-primary-500 bg-white/5 shadow-2xl shadow-primary-500/10' : 'border-white/5 bg-white/2 hover:bg-white/5'}`}
-                >
-                  <div className="text-4xl mb-6 group-hover:scale-110 transition-transform">{method.icon}</div>
-                  <h4 className={`text-xl font-black uppercase tracking-tighter mb-3 ${paymentMethod === method.id ? 'text-primary-500' : 'text-slate-800'}`}>{method.title}</h4>
-                  <p className="text-xs text-slate-500 font-medium italic leading-relaxed">{method.desc}</p>
-                  {paymentMethod === method.id && (
-                    <div className="absolute top-4 right-4 text-primary-500">
-                      <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path></svg>
-                    </div>
-                  )}
+              <div className="flex items-start space-x-6">
+                <div className="text-right">
+                  <div className="text-[10px] font-black uppercase tracking-widest mb-1" style={{color: '#64748b'}}>Date</div>
+                  <div className="text-sm font-black text-white">{new Date(showInvoice.sale_date).toLocaleDateString()}</div>
                 </div>
-              ))}
+                <button 
+                  onClick={() => setShowInvoice(null)}
+                  className="p-2 rounded-xl hover:bg-white/10 transition-colors"
+                  style={{color: '#94a3b8'}}
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+              </div>
             </div>
 
-            {paymentMethod === 'partial' && (
-              <div className="bg-white/3 rounded-[2.5rem] p-10 border border-white/5 mb-12 shadow-inner group animate-fade-in relative">
-                <label className="block text-[11px] font-black text-slate-500 uppercase tracking-widest mb-6 border-l-2 border-primary-500 pl-4">Upfront Capital Buffer (₹)</label>
-                <input 
-                  type="number"
-                  className={`w-full bg-slate-50 border-none rounded-2xl px-10 py-6 text-3xl font-black text-slate-800 transition-all shadow-2xl ${Number(upfrontAmount) > cartTotal ? 'ring-4 ring-red-500 ring-opacity-50' : 'focus:ring-4 focus:ring-primary-500'}`}
-                  placeholder="Enter upfront volume..."
-                  value={upfrontAmount}
-                  onChange={(e) => setUpfrontAmount(e.target.value)}
-                />
-                {Number(upfrontAmount) > cartTotal && (
-                  <p className="mt-4 text-[10px] text-red-500 font-black uppercase tracking-widest animate-pulse">Buffer exceeds total order value</p>
-                )}
-                <p className="mt-6 text-xs text-slate-400 font-medium italic opacity-60">AI suggests maintaining a 30% upfront buffer for optimal wholesaler rating.</p>
-              </div>
-            )}
+            <div className="p-8">
+              {/* Divider */}
+              <div className="border-t border-dashed mb-8" style={{borderColor: 'rgba(255,255,255,0.1)'}}></div>
 
-            {paymentMethod === 'credit' && (
-              <div className="bg-white/3 rounded-[2.5rem] p-10 border border-white/5 mb-12 shadow-inner animate-fade-in">
-                <h4 className="text-[11px] font-black text-slate-500 uppercase tracking-widest mb-4 border-l-2 border-emerald-500 pl-4">Credit Line Activation</h4>
-                <p className="text-xs text-slate-400 font-medium italic leading-relaxed">
-                  The order will be placed using your established credit line. Applicable early-settlement discounts will be calculated and applied automatically when you clear the balance from your Ledger.
-                </p>
+              {/* Items */}
+              <div className="space-y-4 mb-8">
+                <div className="text-[10px] font-black uppercase tracking-widest mb-4" style={{color: '#64748b'}}>Sold Items</div>
+                {showInvoice.items.map((item, idx) => (
+                  <div key={idx} className="flex justify-between items-center py-3 px-4 rounded-xl" style={{background: 'rgba(255,255,255,0.05)'}}>
+                    <span className="text-sm font-bold text-white uppercase tracking-tight">{item.product_name}</span>
+                    <span className="text-sm font-black" style={{color: '#38bdf8'}}>x{item.quantity_sold}</span>
+                  </div>
+                ))}
               </div>
-            )}
 
-            <div className="flex flex-col sm:flex-row gap-6">
+              {/* Total */}
+              <div className="rounded-2xl p-6 mb-8 flex justify-between items-center" style={{background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)'}}>
+                <span className="text-[10px] font-black uppercase tracking-widest" style={{color: '#64748b'}}>Total Quantity</span>
+                <span className="text-2xl font-black text-white">{showInvoice.total_items} UNITS</span>
+              </div>
+
+              {/* Close Button */}
               <button 
-                onClick={() => setShowPaymentModal(false)}
-                className="flex-1 py-6 bg-slate-200 text-slate-600 rounded-[2rem] font-black uppercase text-xs tracking-widest hover:bg-slate-300 transition-all border-none"
+                onClick={() => setShowInvoice(null)}
+                className="w-full text-white font-black uppercase text-[10px] tracking-widest py-5 rounded-2xl transition-all"
+                style={{background: '#0f172a', border: '1px solid rgba(255,255,255,0.08)'}}
+                onMouseEnter={(e) => (e.currentTarget.style.background = '#10b981')}
+                onMouseLeave={(e) => (e.currentTarget.style.background = '#0f172a')}
               >
-                Cancel Protocol
-              </button>
-              <button 
-                disabled={initiating || (paymentMethod === 'partial' && (Number(upfrontAmount) <= 0 || Number(upfrontAmount) > cartTotal))}
-                onClick={handlePaymentInitiation}
-                className="flex-[2] py-6 bg-slate-900 text-white rounded-[2rem] font-black uppercase text-sm tracking-widest hover:bg-primary-600 transition-all shadow-2xl shadow-slate-900/30 flex items-center justify-center gap-4 group disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {initiating ? 'Synchronizing Capital...' : 'Initialize Deployment'}
-                <svg className="w-5 h-5 group-hover:translate-x-2 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M14 5l7 7-7 7"></path></svg>
+                ← Back / Close Invoice
               </button>
             </div>
-            <p className="mt-10 text-[10px] text-slate-500 font-medium italic opacity-40 text-center leading-relaxed">
-              *By initializing, you execute an irrevocable trade signal through the SmartStock Intelligence layer.
-            </p>
           </div>
         </div>
       )}

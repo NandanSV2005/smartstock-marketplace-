@@ -157,6 +157,8 @@ export function WholesalerDashboard() {
                             <>
                               <span className="text-slate-300 opacity-20 text-[10px] font-black">|</span>
                               <p className="text-[10px] font-black text-red-500 uppercase tracking-widest">Due: ₹{order.amount_due}</p>
+                              <span className="text-slate-300 opacity-20 text-[10px] font-black">|</span>
+                              <p className="text-[10px] font-black text-orange-500 uppercase tracking-widest">Due Date: {order.due_date || 'N/A'}</p>
                             </>
                           )}
                         </div>

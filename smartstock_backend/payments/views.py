@@ -96,7 +96,7 @@ class PaymentViewSet(viewsets.ModelViewSet):
                     order.due_date = due_date
                     order.save()
 
-                    # 3. Create Payment record
+                    import random
                     payment = Payment.objects.create(
                         order=order,
                         payment_method=payment_method,
@@ -105,7 +105,7 @@ class PaymentViewSet(viewsets.ModelViewSet):
                         amount_due=amount_due,
                         status=status_val,
                         due_date=due_date,
-                        transaction_id=f"TXN-{uuid.uuid4().hex[:12].upper()}"
+                        transaction_id=f"TXN{random.randint(1000000, 9999999)}"
                     )
                     payment_records.append(payment)
 

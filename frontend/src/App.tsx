@@ -6,6 +6,7 @@ import { LoginPage } from './pages/LoginPage';
 import { RetailerDashboard } from './pages/RetailerDashboard';
 import { WholesalerDashboard } from './pages/WholesalerDashboard';
 import { AdminDashboard } from './pages/AdminDashboard';
+import { SimulatedPaymentPage } from './pages/SimulatedPaymentPage';
 
 function ProtectedRoute({ children }: { children: ReactElement }) {
   const { user, initialized } = useAuth();
@@ -133,6 +134,30 @@ function App() {
           element={
             <ProtectedRoute>
               <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/checkout/payment"
+          element={
+            <ProtectedRoute>
+              <SimulatedPaymentPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/sales/record"
+          element={
+            <ProtectedRoute>
+              <RetailerDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/sales/history"
+          element={
+            <ProtectedRoute>
+              <RetailerDashboard />
             </ProtectedRoute>
           }
         />

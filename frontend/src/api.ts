@@ -390,6 +390,19 @@ export const addInventoryItem = async (token: string, productId: number, current
   return response.json();
 };
 
+export const updateInventoryItem = async (token: string, inventoryId: number, updates: Partial<{ current_stock: number; reorder_level: number }>): Promise<InventoryItem> => {
+  const response = await fetch(`${API_BASE_URL}/inventory/${inventoryId}/`, {
+    method: 'PATCH',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(updates)
+  });
+  if (!response.ok) throw new Error('Failed to update inventory item');
+  return response.json();
+};
+
 export interface Payment {
   id: number;
   order: number;
@@ -424,6 +437,46 @@ export async function getPaymentHistory(accessToken: string, orderId: number): P
 export async function payOutstanding(accessToken: string, paymentId: number): Promise<{ message: string; discount_applied: number; amount_paid: number; payment: Payment }> {
   return request<{ message: string; discount_applied: number; amount_paid: number; payment: Payment }>(`/payments/${paymentId}/pay/`, {
     method: 'POST',
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+}
+
+export interface SaleItem {
+  id: number;
+  product: number;
+  product_name: string;
+  quantity_sold: number;
+}
+
+export interface Sale {
+  id: number;
+  retailer: number;
+  retailer_name: string;
+  sale_date: string;
+  invoice_number: string;
+  total_items: number;
+  items: SaleItem[];
+}
+
+export interface CreateSaleItemPayload {
+  product: number;
+  quantity_sold: number;
+}
+
+export interface CreateSalePayload {
+  items: CreateSaleItemPayload[];
+}
+
+export async function createSale(accessToken: string, payload: CreateSalePayload): Promise<Sale> {
+  return request<Sale>('/sales/', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${accessToken}` },
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function getSalesHistory(accessToken: string): Promise<Sale[]> {
+  return request<Sale[]>('/sales/', {
     headers: { Authorization: `Bearer ${accessToken}` },
   });
 }
