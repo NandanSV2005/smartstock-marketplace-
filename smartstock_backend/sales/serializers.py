@@ -7,7 +7,7 @@ class SaleItemSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = SaleItem
-        fields = ['id', 'product', 'product_name', 'quantity_sold']
+        fields = ['id', 'product', 'product_name', 'quantity_sold', 'unit_price', 'line_total']
 
 class SaleSerializer(serializers.ModelSerializer):
     items = SaleItemSerializer(many=True)
@@ -15,8 +15,9 @@ class SaleSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Sale
-        fields = ['id', 'retailer', 'retailer_name', 'sale_date', 'invoice_number', 'total_items', 'items']
-        read_only_fields = ['retailer', 'sale_date', 'invoice_number', 'total_items']
+        fields = ['id', 'retailer', 'retailer_name', 'sale_date', 'invoice_number', 'total_items', 'total_amount', 'items']
+        read_only_fields = ['retailer', 'sale_date', 'invoice_number', 'total_items', 'total_amount']
+
 
     def create(self, validated_data):
         # We will handle the actual creation and inventory logic in the view 

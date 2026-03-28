@@ -1,5 +1,6 @@
 from django.db import models
 
+from accounts.models import Retailer
 from orders.models import Order
 from common.models import TimeStampedModel
 
@@ -33,3 +34,35 @@ class Payment(TimeStampedModel):
 
     def __str__(self) -> str:
         return f"Payment {self.id} for Order {self.order.order_number}"
+
+
+class RetailerCreditProfile(TimeStampedModel):
+    """
+    Stores the computed credit intelligence for each retailer.
+    Recalculated on demand via the credit intelligence API.
+    """
+    retailer = models.OneToOneField(Retailer, on_delete=models.CASCADE, related_name="credit_profile")
+    credit_score = models.IntegerField(default=100)
+    total_credit_used = models.DecimalField(max_digits=14, decimal_places=2, default=0)
+    overdue_count = models.IntegerField(default=0)
+
+    class Meta:
+        verbose_name = "Retailer Credit Profile"
+        verbose_name_plural = "Retailer Credit Profiles"
+
+    def __str__(self) -> str:
+        return f"Credit Profile — {self.retailer.business_name} (Score: {self.credit_score})"
+
+    @property
+    def risk_level(self) -> str:
+        if self.credit_score >= 80:
+            return 'low'
+        elif self.credit_score >= 50:
+            return 'medium'
+        return 'high'
+
+    @property
+    def credit_limit_suggestion(self) -> float:
+        from decimal import Decimal
+        return float(Decimal('50000') * (Decimal(str(self.credit_score)) / Decimal('100')))
+

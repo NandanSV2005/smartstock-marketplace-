@@ -446,6 +446,8 @@ export interface SaleItem {
   product: number;
   product_name: string;
   quantity_sold: number;
+  unit_price: number;
+  line_total: number;
 }
 
 export interface Sale {
@@ -455,12 +457,14 @@ export interface Sale {
   sale_date: string;
   invoice_number: string;
   total_items: number;
+  total_amount: number;
   items: SaleItem[];
 }
 
 export interface CreateSaleItemPayload {
   product: number;
   quantity_sold: number;
+  unit_price: number;
 }
 
 export interface CreateSalePayload {
@@ -477,6 +481,153 @@ export async function createSale(accessToken: string, payload: CreateSalePayload
 
 export async function getSalesHistory(accessToken: string): Promise<Sale[]> {
   return request<Sale[]>('/sales/', {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+}
+
+// Notifications
+export interface AppNotification {
+  id: number;
+  type: string;
+  title: string;
+  body: string;
+  metadata_json: Record<string, unknown> | null;
+  read_at: string | null;
+  created_at: string;
+}
+
+export async function getNotifications(accessToken: string): Promise<AppNotification[]> {
+  return request<AppNotification[]>('/notifications/', {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+}
+
+export async function markNotificationRead(accessToken: string, id: number): Promise<AppNotification> {
+  return request<AppNotification>(`/notifications/${id}/mark_read/`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+}
+
+export async function markAllNotificationsRead(accessToken: string): Promise<{message: string}> {
+  return request<{message: string}>('/notifications/mark_all_read/', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+}
+
+// Analytics
+export interface RetailerKPIs {
+  total_sales_revenue: number;
+  orders_this_month: number;
+  outstanding_credit: number;
+  low_stock_count: number;
+}
+
+export interface SalesTrendData {
+  date: string;
+  total_quantity: number;
+  total_revenue: number;
+}
+
+export interface InventoryLevelData {
+  name: string;
+  current_stock: number;
+  reorder_level: number;
+  max_stock: number;
+}
+
+export async function getRetailerKPIs(accessToken: string): Promise<RetailerKPIs> {
+  return request<RetailerKPIs>('/analytics/retailer-kpis/', {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+}
+
+export async function getRetailerSalesTrend(accessToken: string): Promise<SalesTrendData[]> {
+  return request<SalesTrendData[]>('/analytics/sales-trend/', {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+}
+
+export async function getRetailerInventoryLevels(accessToken: string): Promise<InventoryLevelData[]> {
+  return request<InventoryLevelData[]>('/analytics/inventory-levels/', {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+}
+
+// ─── Part 1: Smart Reordering Engine ─────────────────────────────────────────
+
+export interface RealtimeInsightAction {
+  type: 'add_to_cart';
+  wholesaler_product_id: number;
+  supplier_id: number;
+  supplier_name: string;
+  price: number;
+  quantity: number;
+}
+
+export interface RealtimeInsight {
+  product: string;
+  product_id: number;
+  current_stock: number;
+  reorder_level: number;
+  avg_daily_sales: number;
+  days_to_stockout: number | null;
+  suggested_reorder_quantity: number;
+  alert_level: 'critical' | 'warning' | 'low_stock' | 'ok' | 'no_data';
+  message: string;
+  action: RealtimeInsightAction | null;
+}
+
+export async function getRealtimeInsights(accessToken: string): Promise<RealtimeInsight[]> {
+  return request<RealtimeInsight[]>('/ai/insights/realtime/', {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+}
+
+// ─── Part 2: Credit Intelligence ──────────────────────────────────────────────
+
+export interface RetailerCreditProfile {
+  retailer_id: number;
+  retailer_name: string;
+  business_type: string;
+  credit_score: number;
+  risk_level: 'low' | 'medium' | 'high';
+  credit_limit_suggestion: number;
+  total_credit_used: number;
+  overdue_count: number;
+}
+
+export async function getCreditProfiles(accessToken: string): Promise<RetailerCreditProfile[]> {
+  return request<RetailerCreditProfile[]>('/payments/credit-profiles/', {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+}
+
+export async function recalculateCreditScore(
+  accessToken: string,
+  retailerId: number
+): Promise<RetailerCreditProfile> {
+  return request<RetailerCreditProfile>(
+    `/payments/credit-profiles/${retailerId}/recalculate/`,
+    {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${accessToken}` },
+    }
+  );
+}
+
+// ─── Part 3: Wholesaler Financial Visibility ──────────────────────────────────
+
+export interface ReceivablesSummary {
+  total_pending_amount: number;
+  total_credit_orders: number;
+  overdue_count: number;
+  overdue_amount: number;
+}
+
+export async function getReceivablesSummary(accessToken: string): Promise<ReceivablesSummary> {
+  return request<ReceivablesSummary>('/payments/receivables-summary/', {
     headers: { Authorization: `Bearer ${accessToken}` },
   });
 }

@@ -38,13 +38,17 @@ class SaleViewSet(viewsets.ModelViewSet):
         sale_items_to_create = []
         inventory_updates = []
         total_items_count = Decimal('0')
+        total_amount = Decimal('0')
         
         for item in items_data:
             product_id = item.get('product')
             qty = Decimal(str(item.get('quantity_sold', 0)))
+            unit_price = Decimal(str(item.get('unit_price', 0)))
             
             if qty <= 0:
                 return Response({"error": f"Invalid quantity for product ID {product_id}"}, status=status.HTTP_400_BAD_REQUEST)
+            if unit_price < 0:
+                return Response({"error": f"Invalid unit price for product ID {product_id}"}, status=status.HTTP_400_BAD_REQUEST)
             
             try:
                 inv_item = Inventory.objects.select_for_update().get(retailer=retailer, product_id=product_id)
@@ -56,17 +60,23 @@ class SaleViewSet(viewsets.ModelViewSet):
                     "error": f"Insufficient stock for {inv_item.product.name}. Available: {inv_item.current_stock}, Requested: {qty}"
                 }, status=status.HTTP_400_BAD_REQUEST)
             
+            line_total = qty * unit_price
+            
             sale_items_to_create.append({
                 'product_id': product_id,
                 'quantity_sold': qty,
+                'unit_price': unit_price,
+                'line_total': line_total,
                 'inv_item': inv_item
             })
             total_items_count += qty
+            total_amount += line_total
 
         # 2. Create the Sale record
         sale = Sale.objects.create(
             retailer=retailer,
-            total_items=total_items_count
+            total_items=total_items_count,
+            total_amount=total_amount
         )
         sale.invoice_number = f"INV-{timezone.now().strftime('%y%m%d')}-{sale.id:04d}"
         sale.save()
@@ -76,7 +86,9 @@ class SaleViewSet(viewsets.ModelViewSet):
             SaleItem.objects.create(
                 sale=sale,
                 product_id=sc['product_id'],
-                quantity_sold=sc['quantity_sold']
+                quantity_sold=sc['quantity_sold'],
+                unit_price=sc['unit_price'],
+                line_total=sc['line_total']
             )
             
             # Update Inventory

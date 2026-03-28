@@ -16,6 +16,13 @@ import {
   getPaymentHistory,
   createSale,
   getSalesHistory,
+  getNotifications,
+  markNotificationRead,
+  markAllNotificationsRead,
+  getRetailerKPIs,
+  getRetailerSalesTrend,
+  getRetailerInventoryLevels,
+  getRealtimeInsights,
 } from '../api';
 import type { 
   AIInsight, 
@@ -24,8 +31,17 @@ import type {
   WholesalerProduct, 
   Cart,
   Sale,
-  CreateSaleItemPayload
+  CreateSaleItemPayload,
+  AppNotification,
+  RetailerKPIs,
+  SalesTrendData,
+  InventoryLevelData,
+  RealtimeInsight,
 } from '../api';
+import {
+  AreaChart, Area, BarChart, Bar,
+  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
+} from 'recharts';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../AuthContext';
@@ -74,6 +90,9 @@ export function RetailerDashboard() {
   const [editingInventoryId, setEditingInventoryId] = useState<number | null>(null);
   const [editingThresholdValue, setEditingThresholdValue] = useState<string>('');
   const [updatingThreshold, setUpdatingThreshold] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [reorderingId, setReorderingId] = useState<number | null>(null);
+  const [reorderSuccessId, setReorderSuccessId] = useState<number | null>(null);
   const location = useLocation();
 
   useEffect(() => {
@@ -171,6 +190,38 @@ export function RetailerDashboard() {
   );
   const sales = useDashboardData<Sale[]>([], salesLoader);
 
+  const notificationsLoader = useMemo(
+    () => () => (accessToken ? getNotifications(accessToken) : Promise.resolve<AppNotification[]>([])),
+    [accessToken],
+  );
+  const kpiLoader = useMemo(
+    () => () => (accessToken ? getRetailerKPIs(accessToken) : Promise.resolve<RetailerKPIs>({
+      total_sales_revenue: 0, orders_this_month: 0, outstanding_credit: 0, low_stock_count: 0
+    })),
+    [accessToken],
+  );
+  const salesTrendLoader = useMemo(
+    () => () => (accessToken ? getRetailerSalesTrend(accessToken) : Promise.resolve<SalesTrendData[]>([])),
+    [accessToken],
+  );
+  const inventoryLevelsLoader = useMemo(
+    () => () => (accessToken ? getRetailerInventoryLevels(accessToken) : Promise.resolve<InventoryLevelData[]>([])),
+    [accessToken],
+  );
+
+  const realtimeInsightsLoader = useMemo(
+    () => () => (accessToken ? getRealtimeInsights(accessToken) : Promise.resolve<RealtimeInsight[]>([])),
+    [accessToken],
+  );
+
+  const notificationsState = useDashboardData<AppNotification[]>([], notificationsLoader);
+  const kpis = useDashboardData<RetailerKPIs>({
+    total_sales_revenue: 0, orders_this_month: 0, outstanding_credit: 0, low_stock_count: 0
+  }, kpiLoader);
+  const salesTrend = useDashboardData<SalesTrendData[]>([], salesTrendLoader);
+  const inventoryLevels = useDashboardData<InventoryLevelData[]>([], inventoryLevelsLoader);
+  const realtimeInsights = useDashboardData<RealtimeInsight[]>([], realtimeInsightsLoader);
+
   const [saleItems, setSaleItems] = useState<CreateSaleItemPayload[]>([]);
   const [isRecordingSale, setIsRecordingSale] = useState(false);
   const [showInvoice, setShowInvoice] = useState<Sale | null>(null);
@@ -233,8 +284,28 @@ export function RetailerDashboard() {
     try {
       await generateMockInsights(accessToken);
       insights.mutate();
+      realtimeInsights.mutate();
     } catch (e: any) {
       alert("Failed to generate insights: " + e.message);
+    }
+  };
+
+  const handleReorderNow = async (insight: RealtimeInsight) => {
+    if (!accessToken || !insight.action) return;
+    const { wholesaler_product_id, quantity } = insight.action;
+    setReorderingId(insight.product_id);
+    try {
+      await addToCart(accessToken, wholesaler_product_id, quantity);
+      cart.mutate();
+      setReorderSuccessId(insight.product_id);
+      setTimeout(() => {
+        setReorderSuccessId(null);
+        setActiveTab('cart');
+      }, 1200);
+    } catch (e: any) {
+      alert('Failed to add to cart: ' + e.message);
+    } finally {
+      setReorderingId(null);
     }
   }
 
@@ -254,6 +325,26 @@ export function RetailerDashboard() {
       alert("Failed to update status: " + e.message);
     }
   }
+
+  const handleMarkNotificationRead = async (id: number) => {
+    if (!accessToken) return;
+    try {
+      await markNotificationRead(accessToken, id);
+      notificationsState.mutate();
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleMarkAllNotificationsRead = async () => {
+    if (!accessToken) return;
+    try {
+      await markAllNotificationsRead(accessToken);
+      notificationsState.mutate();
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   const cartTotal = useMemo(() => {
     return cart.data.items.reduce((sum, item) => sum + (item.quantity * item.unit_price_snapshot), 0);
@@ -284,7 +375,7 @@ export function RetailerDashboard() {
         </div>
         <div className="mt-4 flex md:mt-0 md:ml-4 space-x-2">
           <button
-            onClick={() => navigate('/retailer/dashboard')}
+            onClick={() => { setActiveTab('dashboard'); navigate('/retailer/dashboard'); }}
             className={`px-4 py-2 text-sm font-bold rounded-xl transition-all ${activeTab === 'dashboard' ? 'bg-primary-600 text-white shadow-lg shadow-primary-500/20' : 'glass text-slate-400 border-none hover:bg-white/5'}`}
           >
             Dashboard
@@ -323,55 +414,197 @@ export function RetailerDashboard() {
             <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
             Sales
           </button>
+          
+          {/* Notifications Bell */}
+          <div className="relative z-50">
+            <button
+              onClick={() => setShowNotifications(!showNotifications)}
+              className="px-4 py-2 text-sm font-bold rounded-xl transition-all flex items-center glass text-slate-400 border-none hover:bg-white/5 relative"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+              {notificationsState.data.filter(n => !n.read_at).length > 0 && (
+                <span className="absolute top-1 right-2 inline-flex items-center justify-center px-1.5 py-0.5 text-[10px] font-black leading-none text-white bg-red-500 rounded-full ring-2 ring-slate-900">{notificationsState.data.filter(n => !n.read_at).length}</span>
+              )}
+            </button>
+            {showNotifications && (
+              <div className="absolute right-0 mt-2 w-80 rounded-2xl shadow-2xl z-50 border border-white/10 overflow-hidden text-left bg-[#0f172a] backdrop-blur-xl">
+                <div className="p-4 border-b border-white/10 flex justify-between items-center bg-white/5">
+                  <h3 className="text-sm font-black text-white uppercase tracking-widest">Notifications</h3>
+                  {notificationsState.data.filter(n => !n.read_at).length > 0 && (
+                    <button onClick={handleMarkAllNotificationsRead} className="text-[10px] text-primary-400 hover:text-primary-300 font-bold uppercase tracking-widest">Mark All Read</button>
+                  )}
+                </div>
+                <div className="max-h-96 overflow-y-auto custom-scrollbar">
+                  {notificationsState.data.length === 0 ? (
+                    <p className="p-4 text-xs text-slate-400 italic text-center">No notifications yet</p>
+                  ) : (
+                    notificationsState.data.slice(0, 20).map(note => (
+                      <div key={note.id} className={`p-4 border-b border-white/5 cursor-pointer transition-all hover:bg-white/10 ${note.read_at ? 'opacity-60 bg-transparent' : 'bg-primary-500/10'}`} onClick={() => !note.read_at && handleMarkNotificationRead(note.id)}>
+                        <h4 className="text-sm font-bold text-white mb-1">{note.title}</h4>
+                        <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed">{note.body}</p>
+                        <span className="text-[10px] text-slate-500 mt-2 block tracking-widest uppercase">{new Date(note.created_at).toLocaleString()}</span>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
       {activeTab === 'dashboard' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-          {/* SmartStock AI Block */}
+          {/* Financial Overview KPIs */}
+          <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-2">
+            <div className="bg-[#0f172a] rounded-2xl p-6 shadow-xl border border-white/10 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-primary-500/20 rounded-full blur-xl -mr-10 -mt-10"></div>
+              <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 relative z-10">Monthly Sales</h4>
+              <p className="text-3xl font-black text-white relative z-10">₹{kpis.data?.total_sales_revenue?.toLocaleString() || 0}</p>
+            </div>
+            <div className="bg-[#0f172a] rounded-2xl p-6 shadow-xl border border-white/10 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/20 rounded-full blur-xl -mr-10 -mt-10"></div>
+              <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 relative z-10">Orders This Month</h4>
+              <p className="text-3xl font-black text-white relative z-10">{kpis.data?.orders_this_month || 0}</p>
+            </div>
+            <div className="bg-[#0f172a] rounded-2xl p-6 shadow-xl border border-white/10 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-red-500/20 rounded-full blur-xl -mr-10 -mt-10"></div>
+              <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 relative z-10">Outstanding Credit</h4>
+              <p className="text-3xl font-black text-red-400 relative z-10">₹{kpis.data?.outstanding_credit?.toLocaleString() || 0}</p>
+            </div>
+            <div className="bg-[#0f172a] rounded-2xl p-6 shadow-xl border border-white/10 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-orange-500/20 rounded-full blur-xl -mr-10 -mt-10"></div>
+              <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 relative z-10">Low Stock Items</h4>
+              <p className="text-3xl font-black text-orange-400 relative z-10">{kpis.data?.low_stock_count || 0}</p>
+            </div>
+          </div>
+
+          {/* Charts Section */}
+          <div className="lg:col-span-3 grid grid-cols-1 lg:grid-cols-2 gap-6 mb-2">
+            {/* Sales Trend Chart */}
+            <div className="bg-[#0f172a] rounded-2xl p-6 shadow-xl border border-white/10">
+              <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-6">Sales Trend (30 Days)</h4>
+              <div className="h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={salesTrend.data} margin={{ top: 5, right: 0, left: -20, bottom: 0 }}>
+                    <defs>
+                      <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/>
+                        <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#334155" vertical={false} />
+                    <XAxis dataKey="date" stroke="#64748b" fontSize={10} tickFormatter={(tick) => {try {return new Date(tick).toLocaleDateString(undefined, {month: 'short', day: 'numeric'})} catch(e) {return tick}}} />
+                    <YAxis stroke="#64748b" fontSize={10} axisLine={false} tickLine={false} />
+                    <Tooltip 
+                      contentStyle={{ backgroundColor: '#1e293b', borderColor: '#334155', borderRadius: '0.5rem', fontSize: '12px', fontWeight: 'bold' }}
+                      labelFormatter={(label) => {try {return new Date(label).toLocaleDateString()} catch(e) {return label}}}
+                    />
+                    <Area type="monotone" dataKey="total_revenue" name="Revenue" stroke="#3b82f6" strokeWidth={3} fillOpacity={1} fill="url(#colorRevenue)" />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
+            {/* Inventory Levels Chart */}
+            <div className="bg-[#0f172a] rounded-2xl p-6 shadow-xl border border-white/10">
+              <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-6">Critical Inventory Levels</h4>
+              <div className="h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={inventoryLevels.data} margin={{ top: 5, right: 0, left: -20, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#334155" vertical={false} />
+                    <XAxis dataKey="name" stroke="#64748b" fontSize={10} angle={-45} textAnchor="end" height={60} />
+                    <YAxis stroke="#64748b" fontSize={10} axisLine={false} tickLine={false} />
+                    <Tooltip 
+                      contentStyle={{ backgroundColor: '#1e293b', borderColor: '#334155', borderRadius: '0.5rem', fontSize: '12px', fontWeight: 'bold', color: 'black' }}
+                      cursor={{fill: '#334155', opacity: 0.4}}
+                    />
+                    <Bar dataKey="current_stock" name="Current Stock" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="reorder_level" name="Reorder Level" fill="#f59e0b" radius={[4, 4, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          </div>
+
+          {/* SmartStock AI Block — Real-Time Insights with Reorder Now */}
           <section className="card lg:col-span-3 bg-gradient-to-br from-primary-900 to-slate-100 border-none p-6 text-white shadow-2xl relative overflow-hidden group">
             <div className="absolute -right-12 -top-12 w-48 h-48 bg-primary-600/20 rounded-full blur-3xl group-hover:bg-primary-600/30 transition-all"></div>
             <h3 className="text-lg font-black text-white mb-4 flex items-center relative z-10 uppercase tracking-widest">
               <svg className="w-6 h-6 mr-2 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-              AI Intelligence
-              <button 
+              Smart Stock Assistant
+              <button
                 onClick={handleGenerateInsights}
                 className="ml-auto text-[10px] bg-white/5 hover:bg-white/10 px-4 py-1.5 rounded-full border border-white/10 transition-all font-black uppercase tracking-widest flex items-center"
               >
                 <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                Sync Data
+                Update Alerts
               </button>
             </h3>
-            {insights.loading ? (
-              <p className="text-sm text-primary-200 animate-pulse relative z-10 font-medium italic">Analyzing logistics velocity...</p>
-            ) : insights.error ? (
-              renderError(insights.error)
-            ) : latestInsights.length === 0 ? (
-              <p className="text-base text-primary-200 relative z-10 font-medium italic opacity-60">Supply chain optimized. Global telemetry confirms zero alerts.</p>
+            {realtimeInsights.loading ? (
+              <p className="text-sm text-primary-200 animate-pulse relative z-10 font-medium italic">Checking your stock levels...</p>
+            ) : realtimeInsights.error ? (
+              renderError(realtimeInsights.error)
+            ) : realtimeInsights.data.filter(i => i.alert_level !== 'ok' && i.alert_level !== 'no_data').length === 0 ? (
+              <p className="text-base text-primary-200 relative z-10 font-medium italic opacity-60">Everything is in stock. Your store is ready to sell!</p>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 relative z-10">
-                {latestInsights.map((insight) => (
-                  <div key={insight.id} className="bg-white/5 backdrop-blur-md rounded-2xl p-5 border border-white/10 hover:bg-white/10 transition-all cursor-default group/item">
-                    <div className="flex justify-between items-start mb-3">
-                      <span className={`text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-lg ${
-                        insight.type === 'low_stock' ? 'bg-red-500/20 text-red-400 border border-red-500/30' :
-                        insight.type === 'seasonal' ? 'bg-orange-500/20 text-orange-400 border border-orange-500/30' :
-                        insight.type === 'demand_increase' ? 'bg-green-500/20 text-green-400 border border-green-500/30' :
-                        'bg-primary-500/20 text-primary-400 border border-primary-500/30'
-                      }`}>
-                        {insight.type.replace('_', ' ')}
-                      </span>
-                      <svg className="w-4 h-4 text-white/30 opacity-0 group-hover/item:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
+                {realtimeInsights.data
+                  .filter(i => i.alert_level !== 'ok' && i.alert_level !== 'no_data')
+                  .slice(0, 6)
+                  .map((insight) => (
+                    <div key={insight.product_id} className="bg-white/5 backdrop-blur-md rounded-2xl p-5 border border-white/10 hover:bg-white/10 transition-all group/item flex flex-col">
+                      <div className="flex justify-between items-start mb-3">
+                        <span className={`text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-lg ${
+                          insight.alert_level === 'critical' ? 'bg-red-500/30 text-red-300 border border-red-500/40 animate-pulse' :
+                          insight.alert_level === 'warning' ? 'bg-orange-500/20 text-orange-300 border border-orange-500/30' :
+                          'bg-yellow-500/20 text-yellow-300 border border-yellow-500/30'
+                        }`}>
+                          {insight.alert_level.replace('_', ' ')}
+                        </span>
+                        <span className="text-[10px] font-black text-white/40 uppercase tracking-widest">
+                          {insight.days_to_stockout !== null ? `${insight.days_to_stockout}d left` : 'below min'}
+                        </span>
+                      </div>
+                      <div className="font-black text-white text-sm leading-tight uppercase tracking-tighter mb-1">
+                        {insight.product}
+                      </div>
+                      <div className="text-xs text-slate-300 mt-1 opacity-80 leading-relaxed font-medium italic flex-1">
+                        {insight.message}
+                      </div>
+                      {insight.action && (
+                        <div className="mt-4 pt-3 border-t border-white/10">
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="text-[9px] text-slate-400 font-black uppercase tracking-widest">
+                              via {insight.action.supplier_name}
+                            </span>
+                            <span className="text-[9px] font-black text-emerald-400 uppercase tracking-widest">
+                              ₹{insight.action.price}/unit
+                            </span>
+                          </div>
+                          <button
+                            id={`reorder-btn-${insight.product_id}`}
+                            onClick={() => handleReorderNow(insight)}
+                            disabled={reorderingId === insight.product_id}
+                            className={`w-full py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2 ${
+                              reorderSuccessId === insight.product_id
+                                ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/30'
+                                : 'bg-primary-600 text-white hover:bg-primary-500 shadow-xl shadow-primary-600/20 disabled:opacity-60'
+                            }`}
+                          >
+                            {reorderSuccessId === insight.product_id ? (
+                              <><svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"/></svg> Added to Cart</>
+                            ) : reorderingId === insight.product_id ? (
+                              <><div className="w-3 h-3 border-2 border-slate-400 border-t-slate-900 rounded-full animate-spin"/> Adding...</>
+                            ) : (
+                              <><svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg> Reorder Now ({insight.action.quantity} units)</>
+                            )}
+                          </button>
+                        </div>
+                      )}
                     </div>
-                    <div className="font-black text-white text-base leading-tight uppercase tracking-tighter">
-                      {insight.title}
-                    </div>
-                    <div className="text-xs text-slate-300 mt-3 line-clamp-2 opacity-80 leading-relaxed font-medium italic">
-                      {insight.description}
-                    </div>
-                  </div>
-                ))}
+                  ))}
               </div>
             )}
           </section>
@@ -379,10 +612,10 @@ export function RetailerDashboard() {
           <section className="card p-6 border-t-2 border-red-500/50">
             <h3 className="text-base font-black text-slate-800 mb-6 border-b border-white/5 pb-4 flex items-center uppercase tracking-widest">
               <svg className="w-5 h-5 mr-3 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-              Stock Alerts
+              Low Stock Warnings
             </h3>
             {inventory.loading ? (
-              <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 animate-pulse">Scanning Inventory...</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 animate-pulse">Checking Stock...</p>
             ) : inventory.error ? (
               renderError(inventory.error)
             ) : lowStockItems.length === 0 ? (
@@ -390,7 +623,7 @@ export function RetailerDashboard() {
                 <svg className="mx-auto h-12 w-12 text-slate-500 opacity-20" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <p className="mt-4 text-[10px] font-black text-slate-500 uppercase tracking-widest opacity-40 italic">Zero critical stock deviations</p>
+                <p className="mt-4 text-[10px] font-black text-slate-500 uppercase tracking-widest opacity-40 italic">No low stock items found</p>
               </div>
             ) : (
               <ul className="divide-y divide-slate-100">
@@ -412,15 +645,15 @@ export function RetailerDashboard() {
           <section className="card p-6 lg:col-span-2 border-t-2 border-primary-500/50 shadow-2xl">
             <h3 className="text-base font-black text-slate-800 mb-6 border-b border-white/5 pb-4 flex items-center uppercase tracking-widest">
               <svg className="w-5 h-5 mr-3 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
-              Workflow Activity
+              Recent Orders
             </h3>
             {orders.loading ? (
-              <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 animate-pulse">Fetching Logistics Log...</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 animate-pulse">Loading Orders...</p>
             ) : orders.error ? (
               renderError(orders.error)
             ) : recentOrders.length === 0 ? (
               <div className="text-center py-12 glass rounded-3xl border-none">
-                <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest opacity-40 italic">Infrastructure idle. No recent deployments.</p>
+                <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest opacity-40 italic">No orders to show</p>
               </div>
             ) : (
               <ul className="divide-y divide-slate-100">
@@ -436,11 +669,11 @@ export function RetailerDashboard() {
                           onClick={() => handleMarkAsReceived(order.id)}
                           className="px-3 py-1 text-[10px] font-black uppercase tracking-widest bg-emerald-600 text-white rounded-md hover:bg-emerald-700 transition-all shadow-sm flex items-center"
                         >
-                          Confirm Receipt
+                          Order Received
                         </button>
                       )}
                       <span className={`badge px-3 py-1 ${order.status === 'delivered' ? 'badge-green' : order.status === 'pending' ? 'badge-yellow' : 'badge-blue'}`}>
-                        {order.status === 'delivered' ? 'RECEIVED' : order.status.toUpperCase()}
+                        {order.status === 'delivered' ? 'DONE' : order.status.toUpperCase()}
                       </span>
                     </div>
                   </li>
@@ -456,8 +689,8 @@ export function RetailerDashboard() {
           <div className="absolute top-0 right-0 w-96 h-96 bg-primary-600/5 rounded-full blur-3xl -mr-48 -mt-48"></div>
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12 relative z-10">
             <div>
-              <h3 className="text-3xl font-black text-slate-800 tracking-tighter uppercase mb-2">Wholesale Exchange</h3>
-              <p className="text-sm text-slate-400 font-medium italic">Premium catalog with AI-optimized cost efficiency</p>
+              <h3 className="text-2xl font-black text-slate-800 uppercase tracking-tighter">Supplier Product List</h3>
+            <span className="text-[10px] font-black bg-primary-600 px-4 py-1.5 rounded-full text-white uppercase tracking-widest shadow-lg shadow-primary-500/20">{marketplace.data.length} Items Available</span>
             </div>
             <div className="flex items-center space-x-2 glass p-2 rounded-2xl">
               <span className="text-[10px] font-black text-slate-400 px-4 uppercase tracking-widest">Exchange Status</span>
@@ -645,14 +878,17 @@ export function RetailerDashboard() {
       {activeTab === 'inventory' && (
               <div className="animate-fade-in space-y-6">
                 <div className="flex justify-between items-center mb-6">
-                  <h3 className="text-xl font-black text-slate-800 uppercase tracking-tighter">My Inventory</h3>
-                  <button 
-                    onClick={() => setShowAddInventory(true)}
-                    className="btn btn-primary flex items-center gap-2"
-                  >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
-                    Add Item
-                  </button>
+                  <h3 className="text-2xl font-black text-slate-800 uppercase tracking-tighter">Current Inventory</h3>
+            <div className="flex items-center gap-4">
+              <span className="text-[10px] font-black bg-white/50 px-4 py-1.5 rounded-full text-primary-600 uppercase tracking-widest border border-white/20">{inventory.data.length} Items</span>
+              <button 
+                onClick={() => setShowAddInventory(true)}
+                className="bg-primary-600 text-white text-[10px] font-black uppercase tracking-widest px-6 py-2 rounded-xl shadow-lg shadow-primary-500/20 hover:bg-primary-500 transition-all flex items-center gap-2"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"/></svg>
+                Add Item
+              </button>
+            </div>
                 </div>
 
                 <div className="card overflow-hidden border-none shadow-2xl">
@@ -768,7 +1004,7 @@ export function RetailerDashboard() {
             <div className="flex items-center space-x-4">
               <div className="glass p-4 rounded-2xl border-none shadow-xl">
                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">Total Outstanding</span>
-                <span className="text-2xl font-black text-red-500 tracking-tighter">₹{orders.data.reduce((acc, o) => acc + Math.max(0, Number(o.amount_due)), 0).toFixed(2)}</span>
+                <span className="text-4xl font-black text-red-500 tracking-tighter">₹{orders.data.reduce((acc, o) => acc + Math.max(0, Number(o.amount_due)), 0).toFixed(2)}</span>
               </div>
             </div>
           </div>
@@ -892,25 +1128,40 @@ export function RetailerDashboard() {
                       ))}
                     </select>
                   </div>
-                  <div>
-                    <label className="block text-[11px] font-black text-slate-300 uppercase tracking-widest mb-4">Quantity Sold</label>
-                    <input 
-                      type="number"
-                      className="w-full rounded-2xl px-6 py-4 text-sm font-bold focus:ring-2 focus:ring-primary-500"
-                      style={{background: '#334155', color: 'white', border: '1px solid #475569'}}
-                      placeholder="Enter quantity..."
-                      id="sale-qty-input"
-                    />
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-[11px] font-black text-slate-300 uppercase tracking-widest mb-4">Quantity Sold</label>
+                      <input 
+                        type="number"
+                        className="w-full rounded-2xl px-6 py-4 text-sm font-bold focus:ring-2 focus:ring-primary-500"
+                        style={{background: '#334155', color: 'white', border: '1px solid #475569'}}
+                        placeholder="Qty..."
+                        id="sale-qty-input"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-black text-slate-300 uppercase tracking-widest mb-4">Unit Price (₹)</label>
+                      <input 
+                        type="number"
+                        className="w-full rounded-2xl px-6 py-4 text-sm font-bold focus:ring-2 focus:ring-primary-500"
+                        style={{background: '#334155', color: 'white', border: '1px solid #475569'}}
+                        placeholder="Price..."
+                        id="sale-price-input"
+                      />
+                    </div>
                   </div>
                   <button 
                     onClick={() => {
                       const pSelect = document.getElementById('sale-product-select') as HTMLSelectElement;
                       const qInput = document.getElementById('sale-qty-input') as HTMLInputElement;
+                      const prInput = document.getElementById('sale-price-input') as HTMLInputElement;
                       const pid = parseInt(pSelect.value);
                       const qty = parseFloat(qInput.value);
-                      if (pid > 0 && qty > 0) {
-                        setSaleItems([...saleItems, { product: pid, quantity_sold: qty }]);
+                      const price = parseFloat(prInput.value);
+                      if (pid > 0 && qty > 0 && price >= 0) {
+                        setSaleItems([...saleItems, { product: pid, quantity_sold: qty, unit_price: price }]);
                         qInput.value = '';
+                        prInput.value = '';
                       }
                     }}
                     className="w-full text-white font-black uppercase text-[10px] tracking-widest py-4 rounded-xl transition-all shadow-xl" style={{background: '#2563eb'}}
@@ -938,14 +1189,17 @@ export function RetailerDashboard() {
                         <div key={idx} className="flex justify-between items-center bg-white/5 p-5 rounded-2xl border border-white/5">
                           <div>
                             <div className="text-sm font-black text-white uppercase tracking-tight">{p?.name || 'Unknown Product'}</div>
-                            <div className="text-[10px] font-black text-slate-300 tracking-widest mt-1">QTY: {si.quantity_sold}</div>
+                            <div className="text-[10px] font-black text-slate-300 tracking-widest mt-1">QTY: {si.quantity_sold} × ₹{si.unit_price} </div>
                           </div>
-                          <button 
-                            onClick={() => setSaleItems(saleItems.filter((_, i) => i !== idx))}
-                            className="text-red-400 hover:text-red-500 p-2"
-                          >
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                          </button>
+                          <div className="flex items-center space-x-4">
+                            <div className="text-sm font-black text-primary-400">₹{(si.quantity_sold * si.unit_price).toFixed(2)}</div>
+                            <button 
+                              onClick={() => setSaleItems(saleItems.filter((_, i) => i !== idx))}
+                              className="text-red-400 hover:text-red-500 p-2"
+                            >
+                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            </button>
+                          </div>
                         </div>
                       );
                     })
@@ -961,6 +1215,7 @@ export function RetailerDashboard() {
                     <th className="px-10 py-6 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">Sale ID</th>
                     <th className="px-10 py-6 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">Date</th>
                     <th className="px-10 py-6 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">Items</th>
+                    <th className="px-10 py-6 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">Total Amount</th>
                     <th className="px-10 py-6 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">Invoice #</th>
                     <th className="px-10 py-6 text-right text-[10px] font-black text-slate-400 uppercase tracking-widest">Action</th>
                   </tr>
@@ -976,6 +1231,7 @@ export function RetailerDashboard() {
                         <td className="px-10 py-6 whitespace-nowrap text-sm font-black text-slate-800">#{sale.id}</td>
                         <td className="px-10 py-6 whitespace-nowrap text-sm font-bold text-slate-500">{new Date(sale.sale_date).toLocaleDateString()}</td>
                         <td className="px-10 py-6 whitespace-nowrap text-sm font-black text-slate-800">{sale.total_items} UNITS</td>
+                        <td className="px-10 py-6 whitespace-nowrap text-sm font-black text-emerald-600">₹{sale.total_amount}</td>
                         <td className="px-10 py-6 whitespace-nowrap">
                           <span className="badge badge-blue bg-primary-500/10 text-primary-600 border border-primary-500/10 text-[10px] font-black uppercase">{sale.invoice_number}</span>
                         </td>
@@ -1133,16 +1389,23 @@ export function RetailerDashboard() {
                 <div className="text-[10px] font-black uppercase tracking-widest mb-4" style={{color: '#64748b'}}>Sold Items</div>
                 {showInvoice.items.map((item, idx) => (
                   <div key={idx} className="flex justify-between items-center py-3 px-4 rounded-xl" style={{background: 'rgba(255,255,255,0.05)'}}>
-                    <span className="text-sm font-bold text-white uppercase tracking-tight">{item.product_name}</span>
-                    <span className="text-sm font-black" style={{color: '#38bdf8'}}>x{item.quantity_sold}</span>
+                    <div>
+                      <span className="text-sm font-bold text-white uppercase tracking-tight block">{item.product_name}</span>
+                      <span className="text-[10px] font-black" style={{color: '#94a3b8'}}>{item.quantity_sold} × ₹{item.unit_price}</span>
+                    </div>
+                    <span className="text-sm font-black" style={{color: '#38bdf8'}}>₹{item.line_total}</span>
                   </div>
                 ))}
               </div>
 
               {/* Total */}
-              <div className="rounded-2xl p-6 mb-8 flex justify-between items-center" style={{background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)'}}>
+              <div className="rounded-2xl p-6 mb-4 flex justify-between items-center" style={{background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)'}}>
                 <span className="text-[10px] font-black uppercase tracking-widest" style={{color: '#64748b'}}>Total Quantity</span>
-                <span className="text-2xl font-black text-white">{showInvoice.total_items} UNITS</span>
+                <span className="text-xl font-black text-white">{showInvoice.total_items} UNITS</span>
+              </div>
+              <div className="rounded-2xl p-6 mb-8 flex justify-between items-center" style={{background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.2)'}}>
+                <span className="text-[10px] font-black uppercase tracking-widest" style={{color: '#34d399'}}>Grand Total</span>
+                <span className="text-3xl font-black text-white">₹{showInvoice.total_amount}</span>
               </div>
 
               {/* Close Button */}
