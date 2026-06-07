@@ -1,0 +1,43 @@
+How to Run SmartStock Marketplace
+This guide provides the steps to set up and run both the Django backend and the React frontend.
+
+1. Backend (Django)
+The backend is located in the smartstock_backend directory.
+
+Prerequisites
+Python 3.x
+MySQL (ensure it's running and configured in smartstock_backend/settings.py)
+Setup & Run
+Navigate to the root directory:
+powershell
+cd c:\Users\Nandan\Smartstock_Marketplace
+Activate Virtual Environment:
+powershell
+.venv\Scripts\activate
+(If it doesn't exist, create it with python -m venv .venv and install dependencies with pip install -r requirements.txt)
+Navigate to backend directory:
+powershell
+cd smartstock_backend
+Run Migrations (Optional but recommended):
+powershell
+python manage.py migrate
+Start the Server:
+powershell
+python manage.py runserver
+The backend will be available at http://127.0.0.1:8000/.
+2. Frontend (React/Vite)
+The frontend is located in the frontend directory.
+
+Prerequisites
+Node.js and npm
+Setup & Run
+Navigate to frontend directory:
+powershell
+cd c:\Users\Nandan\Smartstock_Marketplace\frontend
+Install Dependencies:
+powershell
+npm install
+Start the Development Server:
+powershell
+npm run dev
+The frontend will be available at the URL shown in the terminal (usually http://localhost:5173/).
