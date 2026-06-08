@@ -95,28 +95,28 @@ export default function AddProductDialog({ isOpen, onClose, onSuccess }: AddProd
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] overflow-y-auto bg-slate-900/40 flex items-center justify-center p-4 sm:p-6 animate-fade-in" role="dialog" aria-modal="true" onClick={onClose}>
+    <div className="fixed inset-0 z-[100] overflow-y-auto bg-black/60 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 animate-fade-in" role="dialog" aria-modal="true" onClick={onClose}>
       <div 
-        className="bg-white dark:bg-slate-900 rounded-lg shadow-lg border border-slate-200 dark:border-slate-800 max-w-4xl w-full p-6 sm:p-8 animate-scale-in relative h-auto overflow-y-auto max-h-[90vh]"
+        className="bg-white dark:bg-[#0a0a0a] rounded-2xl shadow-xl border border-slate-200 dark:border-white/10 max-w-4xl w-full p-6 sm:p-8 animate-scale-in relative h-auto overflow-y-auto max-h-[90vh]"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between items-start mb-6">
           <div>
-            <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-100 mb-1">
+            <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-1 tracking-tight">
               Add New Product
             </h3>
             <p className="text-sm text-slate-500 dark:text-slate-400">Initialize a new product record in the marketplace directory.</p>
           </div>
           <button 
             onClick={onClose}
-            className="p-1.5 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
+            className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
           </button>
         </div>
 
         {error && (
-          <div className="mb-6 bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-400 p-3.5 rounded-md text-sm font-medium flex items-center border border-red-100 dark:border-red-950/50 animate-fade-in">
+          <div className="mb-6 bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-400 p-3.5 rounded-lg text-sm font-medium flex items-center border border-red-100 dark:border-red-950/50 animate-fade-in">
             <svg className="w-4 h-4 mr-2.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
             {error}
           </div>
@@ -125,7 +125,7 @@ export default function AddProductDialog({ isOpen, onClose, onSuccess }: AddProd
         <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Section 1: Basic Info */}
           <div className="lg:col-span-2 space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50 dark:bg-slate-800/30 p-5 rounded-lg border border-slate-100 dark:border-slate-800">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50 dark:bg-white/5 p-5 rounded-xl border border-slate-150 dark:border-white/5">
               <h4 className="md:col-span-2 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
                 Product Details
               </h4>
@@ -160,7 +160,7 @@ export default function AddProductDialog({ isOpen, onClose, onSuccess }: AddProd
             </div>
 
             {/* Section 2: Pricing & Stock */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-slate-50 dark:bg-slate-800/30 p-5 rounded-lg border border-slate-100 dark:border-slate-800">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-slate-50 dark:bg-white/5 p-5 rounded-xl border border-slate-150 dark:border-white/5">
               <h4 className="md:col-span-3 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
                 Pricing & Inventory
               </h4>
@@ -187,12 +187,12 @@ export default function AddProductDialog({ isOpen, onClose, onSuccess }: AddProd
           </div>
 
           <div className="space-y-6 flex flex-col justify-between">
-            <div className="bg-slate-50 dark:bg-slate-800/30 p-5 rounded-lg border border-slate-100 dark:border-slate-800 flex-1 flex flex-col">
+            <div className="bg-slate-50 dark:bg-white/5 p-5 rounded-xl border border-slate-150 dark:border-white/5 flex-1 flex flex-col">
               <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-4">
                 Product Image
               </h4>
               
-              <div className="flex-1 flex flex-col items-center justify-center border border-dashed border-slate-300 dark:border-slate-700 rounded-lg p-6 bg-white dark:bg-slate-900 hover:border-primary-500 transition-all cursor-pointer relative overflow-hidden min-h-[160px]">
+              <div className="flex-1 flex flex-col items-center justify-center border border-dashed border-slate-200 dark:border-white/10 rounded-xl p-6 bg-white dark:bg-[#0a0a0a] hover:border-primary-500 transition-all cursor-pointer relative overflow-hidden min-h-[160px]">
                 <input 
                   type="file" 
                   accept="image/*"

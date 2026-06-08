@@ -500,14 +500,14 @@ export function RetailerDashboard() {
               <div className="h-64">
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={salesTrend.data} margin={{ top: 5, right: 0, left: -20, bottom: 0 }}>
-                    <CartesianGrid stroke="var(--card-border)" vertical={false} />
-                    <XAxis dataKey="date" stroke="#64748b" fontSize={12} tickFormatter={(tick) => {try {return new Date(tick).toLocaleDateString(undefined, {month: 'short', day: 'numeric'})} catch(e) {return tick}}} />
-                    <YAxis stroke="#64748b" fontSize={12} axisLine={false} tickLine={false} />
+                    <CartesianGrid stroke="var(--card-border)" vertical={false} strokeDasharray="3 3" />
+                    <XAxis dataKey="date" stroke="#64748b" fontSize={11} tickFormatter={(tick) => {try {return new Date(tick).toLocaleDateString(undefined, {month: 'short', day: 'numeric'})} catch(e) {return tick}}} />
+                    <YAxis stroke="#64748b" fontSize={11} axisLine={false} tickLine={false} />
                     <Tooltip 
-                      contentStyle={{ backgroundColor: 'var(--card-bg)', borderColor: 'var(--card-border)', borderRadius: '0.375rem', fontSize: '12px', color: 'var(--color-slate-800)', boxShadow: '0 1px 2px rgba(0,0,0,0.05)' }}
+                      contentStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.8)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '0.5rem', fontSize: '11px', color: '#ffffff', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.3)' }}
                       labelFormatter={(label) => {try {return new Date(label).toLocaleDateString()} catch(e) {return label}}}
                     />
-                    <Area type="monotone" dataKey="total_revenue" name="Revenue" stroke="#3b82f6" strokeWidth={2} fill="#3b82f6" fillOpacity={0.2} />
+                    <Area type="monotone" dataKey="total_revenue" name="Revenue" stroke="#6366f1" strokeWidth={1.5} fill="#6366f1" fillOpacity={0.08} />
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
@@ -516,7 +516,7 @@ export function RetailerDashboard() {
             {/* Inventory Levels Chart */}
             <div className="dash-section p-6">
               <div className="flex items-center gap-2.5 mb-6">
-                <div className="w-7 h-7 rounded bg-amber-500/10 border border-amber-500/20 flex items-center justify-center flex-shrink-0">
+                <div className="w-7 h-7 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center flex-shrink-0">
                   <svg className="w-3.5 h-3.5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
                 </div>
                 <h4 className="text-xs font-semibold text-slate-500 dark:text-slate-400">Critical Inventory Levels</h4>
@@ -524,15 +524,15 @@ export function RetailerDashboard() {
               <div className="h-64">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={inventoryLevels.data} margin={{ top: 5, right: 0, left: -20, bottom: 0 }}>
-                    <CartesianGrid stroke="var(--card-border)" vertical={false} />
-                    <XAxis dataKey="name" stroke="#64748b" fontSize={12} angle={-45} textAnchor="end" height={60} />
-                    <YAxis stroke="#64748b" fontSize={12} axisLine={false} tickLine={false} />
+                    <CartesianGrid stroke="var(--card-border)" vertical={false} strokeDasharray="3 3" />
+                    <XAxis dataKey="name" stroke="#64748b" fontSize={11} angle={-45} textAnchor="end" height={60} />
+                    <YAxis stroke="#64748b" fontSize={11} axisLine={false} tickLine={false} />
                     <Tooltip 
-                      contentStyle={{ backgroundColor: 'var(--card-bg)', borderColor: 'var(--card-border)', borderRadius: '0.375rem', fontSize: '12px', color: 'var(--color-slate-800)', boxShadow: '0 1px 2px rgba(0,0,0,0.05)' }}
-                      cursor={{fill: 'var(--color-slate-100)', opacity: 0.15}}
+                      contentStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.8)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '0.5rem', fontSize: '11px', color: '#ffffff', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.3)' }}
+                      cursor={{fill: 'rgba(255, 255, 255, 0.03)'}}
                     />
-                    <Bar dataKey="current_stock" name="Current Stock" fill="#3b82f6" fillOpacity={0.8} radius={[2, 2, 0, 0]} />
-                    <Bar dataKey="reorder_level" name="Reorder Level" fill="#f59e0b" fillOpacity={0.8} radius={[2, 2, 0, 0]} />
+                    <Bar dataKey="current_stock" name="Current Stock" fill="#6366f1" fillOpacity={0.85} radius={[3, 3, 0, 0]} />
+                    <Bar dataKey="reorder_level" name="Reorder Level" fill="#f59e0b" fillOpacity={0.7} radius={[3, 3, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>

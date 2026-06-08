@@ -343,8 +343,8 @@ export function WholesalerDashboard() {
                         {products.map(p => (
                           <li key={p.id} className="py-4 first:pt-0">
                             {editingProductId === p.id ? (
-                              <div className="space-y-4 p-4 bg-slate-50 dark:bg-slate-800/30 rounded border border-slate-200 dark:border-slate-800 animate-scale-in">
-                                <p className="text-xs font-semibold text-slate-800 dark:text-slate-100 truncate block border-b border-slate-100 dark:border-slate-800 pb-2">{p.product.name}</p>
+                              <div className="space-y-4 p-4 bg-slate-50 dark:bg-white/5 rounded-xl border border-slate-200 dark:border-white/10 animate-scale-in">
+                                <p className="text-xs font-semibold text-slate-800 dark:text-slate-100 truncate block border-b border-slate-100 dark:border-white/5 pb-2">{p.product.name}</p>
                                 <div className="grid grid-cols-2 gap-4">
                                   <div>
                                     <label className="block text-xs font-medium text-slate-500 mb-1">Rate (₹)</label>
@@ -363,11 +363,11 @@ export function WholesalerDashboard() {
                             ) : (
                               <div className="flex justify-between items-start group relative">
                                 <div className="flex-1 min-w-0">
-                                  <p className="text-sm font-semibold text-slate-800 dark:text-slate-205 truncate pr-4 group-hover:text-primary-600 transition-colors">{p.product.name}</p>
+                                  <p className="text-sm font-semibold text-slate-800 dark:text-slate-200 truncate pr-4 group-hover:text-primary-650 transition-colors">{p.product.name}</p>
                                   <div className="flex items-center space-x-2 mt-1.5">
                                     <p className="text-xs font-semibold text-primary-600 dark:text-primary-500">₹{p.wholesale_price}</p>
                                     <span className="text-slate-300 dark:text-slate-700">|</span>
-                                    <p className="text-xs text-slate-555">MRP: ₹{p.mrp}</p>
+                                    <p className="text-xs text-slate-500">MRP: ₹{p.mrp}</p>
                                   </div>
                                   <button onClick={() => handleEditProduct(p)} className="mt-2 text-xs font-semibold text-slate-400 hover:text-primary-600 transition-colors">Reconfigure</button>
                                 </div>
@@ -375,7 +375,7 @@ export function WholesalerDashboard() {
                                   <span className={`badge ${p.available_stock > p.min_order_qty * 5 ? 'badge-green' : 'badge-red'} block mb-1.5`}>
                                     Vol: {p.available_stock}
                                   </span>
-                                  <span className="text-xs text-slate-555">Min: {p.min_order_qty}</span>
+                                  <span className="text-xs text-slate-500">Min: {p.min_order_qty}</span>
                                 </div>
                               </div>
                             )}
