@@ -49,6 +49,7 @@
   --glass-bg: rgba(12, 12, 14, 0.75);
   --glass-border: rgba(255, 255, 255, 0.05);
   --hero-glow: radial-gradient(circle at 50% 50%, rgba(249, 115, 22, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
+  --divider: rgba(255, 255, 255, 0.07);
 
   /* Dashboard specific tokens */
   --card-bg: #111113;
@@ -101,6 +102,7 @@
   --glass-bg: rgba(255, 255, 255, 0.75);
   --glass-border: rgba(0, 0, 0, 0.08);
   --hero-glow: radial-gradient(circle at 50% 50%, rgba(249, 115, 22, 0.08) 0%, rgba(255, 255, 255, 0) 70%);
+  --divider: rgba(0, 0, 0, 0.08);
 
   /* Dashboard specific tokens */
   --card-bg: #ffffff;
@@ -215,7 +217,7 @@
     transition: all 0.3s ease;
   }
   .card:hover {
-    border-color: rgba(255, 255, 255, 0.1);
+    border-color: var(--glass-border);
     box-shadow: var(--card-hover-shadow);
   }
 
@@ -241,7 +243,7 @@
   .kpi-card:hover {
     transform: translateY(-2px);
     box-shadow: var(--card-hover-shadow);
-    border-color: rgba(255,255,255,0.12);
+    border-color: var(--glass-border);
   }
 
   /* ─── Dashboard Section ───────────────────────────────── */
@@ -285,7 +287,7 @@
   }
   .tab-pill:hover {
     color: var(--color-slate-700);
-    background: rgba(255,255,255,0.04);
+    background: var(--color-slate-200);
   }
   .tab-pill.active {
     background: var(--color-primary-600);
@@ -371,16 +373,17 @@
     text-transform: uppercase;
     letter-spacing: 0.1em;
     color: var(--color-slate-400);
-    background: rgba(255,255,255,0.02);
+    background: var(--color-slate-100);
     border-bottom: 1px solid var(--card-border);
   }
   .premium-table tbody td {
     padding: 1rem 1.25rem;
-    border-bottom: 1px solid rgba(255,255,255,0.03);
+    border-bottom: 1px solid var(--divider);
     font-size: 0.875rem;
+    color: var(--color-slate-600);
   }
   .premium-table tbody tr:hover td {
-    background: rgba(255,255,255,0.025);
+    background: var(--color-slate-100);
   }
   .premium-table tbody tr:last-child td {
     border-bottom: none;

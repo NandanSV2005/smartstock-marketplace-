@@ -452,7 +452,7 @@ export function RetailerDashboard() {
                 <span className="text-[9px] font-black uppercase tracking-wider text-emerald-400 bg-emerald-400/10 px-2 py-1 rounded-full border border-emerald-400/15">Revenue</span>
               </div>
               <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1 relative z-10">Monthly Sales</p>
-              <p className="stat-value text-white relative z-10">₹{kpis.data?.total_sales_revenue?.toLocaleString() || 0}</p>
+              <p className="stat-value text-slate-800 relative z-10">₹{kpis.data?.total_sales_revenue?.toLocaleString() || 0}</p>
             </div>
             {/* Orders This Month */}
             <div className="kpi-card stagger-2 animate-fade-in" style={{'--kpi-accent': 'linear-gradient(90deg,#3b82f6,#2563eb)'} as React.CSSProperties}>
@@ -463,7 +463,7 @@ export function RetailerDashboard() {
                 </div>
               </div>
               <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1 relative z-10">Orders This Month</p>
-              <p className="stat-value text-white relative z-10">{kpis.data?.orders_this_month || 0}</p>
+              <p className="stat-value text-slate-800 relative z-10">{kpis.data?.orders_this_month || 0}</p>
             </div>
             {/* Outstanding Credit */}
             <div className="kpi-card stagger-3 animate-fade-in" style={{'--kpi-accent': 'linear-gradient(90deg,#ef4444,#dc2626)'} as React.CSSProperties}>
@@ -487,7 +487,7 @@ export function RetailerDashboard() {
                 {(kpis.data?.low_stock_count ?? 0) > 0 && <span className="text-[9px] font-black uppercase tracking-wider text-amber-400 bg-amber-400/10 px-2 py-1 rounded-full border border-amber-400/15 animate-pulse-slow">Alert</span>}
               </div>
               <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1 relative z-10">Low Stock Items</p>
-              <p className={`stat-value relative z-10 ${(kpis.data?.low_stock_count ?? 0) > 0 ? 'text-amber-400' : 'text-white'}`}>{kpis.data?.low_stock_count || 0}</p>
+              <p className={`stat-value relative z-10 ${(kpis.data?.low_stock_count ?? 0) > 0 ? 'text-amber-400' : 'text-slate-800'}`}>{kpis.data?.low_stock_count || 0}</p>
             </div>
           </div>
 
@@ -940,7 +940,7 @@ export function RetailerDashboard() {
                           <th className="text-left">Status</th>
                         </tr>
                       </thead>
-                      <tbody className="bg-white/2 divide-y divide-white/5">
+                      <tbody className="divide-y divide-slate-200">
                         {inventory.data.filter(item => Number(item.current_stock) > 0).length === 0 ? (
                           <tr>
                             <td colSpan={5} className="px-6 py-24 text-center">
@@ -1151,40 +1151,37 @@ export function RetailerDashboard() {
 
           {salesSubTab === 'record' ? (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              <div className="rounded-[2.5rem] p-10 shadow-2xl border border-slate-700" style={{background: '#1e293b'}}>
-                <h4 className="text-xl font-black text-white uppercase tracking-tighter mb-8">Item Entry</h4>
+              <div className="dash-section p-10 rounded-[2.5rem] border border-slate-200">
+                <h4 className="text-xl font-black text-slate-800 uppercase tracking-tighter mb-8">Item Entry</h4>
                 <div className="space-y-6">
                   <div>
-                    <label className="block text-[11px] font-black text-slate-300 uppercase tracking-widest mb-4">Select Product</label>
+                    <label className="block text-[11px] font-black text-slate-500 uppercase tracking-widest mb-4">Select Product</label>
                     <select 
-                      className="w-full rounded-2xl px-6 py-4 text-sm font-bold focus:ring-2 focus:ring-primary-500"
-                      style={{background: '#334155', color: 'white', border: '1px solid #475569'}}
+                      className="w-full rounded-2xl px-6 py-4 text-sm font-bold focus:ring-2 focus:ring-primary-500 bg-slate-100 text-slate-800 border border-slate-200 focus:outline-none"
                       id="sale-product-select"
                       defaultValue="0"
                     >
-                      <option value="0" disabled>Select from inventory...</option>
+                      <option value="0" disabled className="text-slate-500 bg-slate-50">Select from inventory...</option>
                       {inventory.data.map(item => (
-                        <option key={item.id} value={item.product.id}>{item.product.name} ({item.current_stock} available)</option>
+                        <option key={item.id} value={item.product.id} className="text-slate-800 bg-slate-50">{item.product.name} ({item.current_stock} available)</option>
                       ))}
                     </select>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-[11px] font-black text-slate-300 uppercase tracking-widest mb-4">Quantity Sold</label>
+                      <label className="block text-[11px] font-black text-slate-500 uppercase tracking-widest mb-4">Quantity Sold</label>
                       <input 
                         type="number"
-                        className="w-full rounded-2xl px-6 py-4 text-sm font-bold focus:ring-2 focus:ring-primary-500"
-                        style={{background: '#334155', color: 'white', border: '1px solid #475569'}}
+                        className="w-full rounded-2xl px-6 py-4 text-sm font-bold focus:ring-2 focus:ring-primary-500 bg-slate-100 text-slate-800 border border-slate-200 focus:outline-none"
                         placeholder="Qty..."
                         id="sale-qty-input"
                       />
                     </div>
                     <div>
-                      <label className="block text-[11px] font-black text-slate-300 uppercase tracking-widest mb-4">Unit Price (₹)</label>
+                      <label className="block text-[11px] font-black text-slate-500 uppercase tracking-widest mb-4">Unit Price (₹)</label>
                       <input 
                         type="number"
-                        className="w-full rounded-2xl px-6 py-4 text-sm font-bold focus:ring-2 focus:ring-primary-500"
-                        style={{background: '#334155', color: 'white', border: '1px solid #475569'}}
+                        className="w-full rounded-2xl px-6 py-4 text-sm font-bold focus:ring-2 focus:ring-primary-500 bg-slate-100 text-slate-800 border border-slate-200 focus:outline-none"
                         placeholder="Price..."
                         id="sale-price-input"
                       />
@@ -1204,18 +1201,18 @@ export function RetailerDashboard() {
                         prInput.value = '';
                       }
                     }}
-                    className="w-full text-white font-black uppercase text-[10px] tracking-widest py-4 rounded-xl transition-all shadow-xl" style={{background: '#2563eb'}}
+                    className="w-full text-white font-black uppercase text-[10px] tracking-widest py-4 rounded-xl transition-all shadow-xl bg-blue-600 hover:bg-blue-700"
                   >
                     Add to Bill
                   </button>
                 </div>
               </div>
 
-              <div className="rounded-[2.5rem] p-10 shadow-2xl relative overflow-hidden" style={{background: '#0f172a'}}>
+              <div className="dash-section p-10 rounded-[2.5rem] relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-primary-500/10 rounded-full blur-3xl -mr-32 -mt-32"></div>
-                <h4 className="text-xl font-black text-white uppercase tracking-tighter mb-8 flex items-center">
+                <h4 className="text-xl font-black text-slate-800 uppercase tracking-tighter mb-8 flex items-center">
                   Bill Preview
-                  <span className="ml-4 px-3 py-1 bg-white/10 rounded-full text-[10px] tracking-widest font-black">{saleItems.length} ITEMS</span>
+                  <span className="ml-4 px-3 py-1 bg-primary-500/10 rounded-full text-[10px] tracking-widest font-black text-primary-500">{saleItems.length} ITEMS</span>
                 </h4>
                 <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
                   {saleItems.length === 0 ? (
@@ -1226,10 +1223,10 @@ export function RetailerDashboard() {
                     saleItems.map((si, idx) => {
                       const p = inventory.data.find(inv => inv.product.id === si.product)?.product;
                       return (
-                        <div key={idx} className="flex justify-between items-center bg-white/5 p-5 rounded-2xl border border-white/5">
+                        <div key={idx} className="flex justify-between items-center bg-slate-100/50 p-5 rounded-2xl border border-slate-200/50">
                           <div>
-                            <div className="text-sm font-black text-white uppercase tracking-tight">{p?.name || 'Unknown Product'}</div>
-                            <div className="text-[10px] font-black text-slate-300 tracking-widest mt-1">QTY: {si.quantity_sold} × ₹{si.unit_price} </div>
+                            <div className="text-sm font-black text-slate-800 uppercase tracking-tight">{p?.name || 'Unknown Product'}</div>
+                            <div className="text-[10px] font-black text-slate-500 tracking-widest mt-1">QTY: {si.quantity_sold} × ₹{si.unit_price} </div>
                           </div>
                           <div className="flex items-center space-x-4">
                             <div className="text-sm font-black text-primary-400">₹{(si.quantity_sold * si.unit_price).toFixed(2)}</div>
@@ -1395,25 +1392,24 @@ export function RetailerDashboard() {
       {showInvoice && (
         <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-md animate-fade-in" onClick={() => setShowInvoice(null)}>
           <div 
-            className="rounded-[2rem] shadow-[0_32px_64px_-12px_rgba(0,0,0,0.8)] max-w-lg w-full animate-scale-in overflow-y-auto"
-            style={{background: '#1e293b', maxHeight: '90vh', border: '1px solid rgba(255,255,255,0.08)'}}
+            className="rounded-[2rem] shadow-[0_32px_64px_-12px_rgba(0,0,0,0.8)] max-w-lg w-full animate-scale-in overflow-y-auto bg-slate-100 border border-slate-200"
+            style={{maxHeight: '90vh'}}
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
             <div className="p-8 pb-0 flex justify-between items-start">
               <div>
-                <h3 className="text-2xl font-black text-white uppercase tracking-tighter mb-1">Tax Invoice</h3>
-                <p className="text-[10px] font-black uppercase tracking-widest" style={{color: '#64748b'}}>{showInvoice.invoice_number}</p>
+                <h3 className="text-2xl font-black text-slate-800 uppercase tracking-tighter mb-1">Tax Invoice</h3>
+                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">{showInvoice.invoice_number}</p>
               </div>
               <div className="flex items-start space-x-6">
                 <div className="text-right">
-                  <div className="text-[10px] font-black uppercase tracking-widest mb-1" style={{color: '#64748b'}}>Date</div>
-                  <div className="text-sm font-black text-white">{new Date(showInvoice.sale_date).toLocaleDateString()}</div>
+                  <div className="text-[10px] font-black uppercase tracking-widest mb-1 text-slate-400">Date</div>
+                  <div className="text-sm font-black text-slate-800">{new Date(showInvoice.sale_date).toLocaleDateString()}</div>
                 </div>
                 <button 
                   onClick={() => setShowInvoice(null)}
-                  className="p-2 rounded-xl hover:bg-white/10 transition-colors"
-                  style={{color: '#94a3b8'}}
+                  className="p-2 rounded-xl hover:bg-slate-200 text-slate-400 hover:text-slate-600 transition-colors"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
@@ -1422,39 +1418,36 @@ export function RetailerDashboard() {
 
             <div className="p-8">
               {/* Divider */}
-              <div className="border-t border-dashed mb-8" style={{borderColor: 'rgba(255,255,255,0.1)'}}></div>
+              <div className="border-t border-dashed border-slate-200 mb-8"></div>
 
               {/* Items */}
               <div className="space-y-4 mb-8">
-                <div className="text-[10px] font-black uppercase tracking-widest mb-4" style={{color: '#64748b'}}>Sold Items</div>
+                <div className="text-[10px] font-black uppercase tracking-widest mb-4 text-slate-400">Sold Items</div>
                 {showInvoice.items.map((item, idx) => (
-                  <div key={idx} className="flex justify-between items-center py-3 px-4 rounded-xl" style={{background: 'rgba(255,255,255,0.05)'}}>
+                  <div key={idx} className="flex justify-between items-center py-3 px-4 rounded-xl bg-slate-50 border border-slate-200">
                     <div>
-                      <span className="text-sm font-bold text-white uppercase tracking-tight block">{item.product_name}</span>
-                      <span className="text-[10px] font-black" style={{color: '#94a3b8'}}>{item.quantity_sold} × ₹{item.unit_price}</span>
+                      <span className="text-sm font-bold text-slate-800 uppercase tracking-tight block">{item.product_name}</span>
+                      <span className="text-[10px] font-black text-slate-500">{item.quantity_sold} × ₹{item.unit_price}</span>
                     </div>
-                    <span className="text-sm font-black" style={{color: '#38bdf8'}}>₹{item.line_total}</span>
+                    <span className="text-sm font-black text-primary-500">₹{item.line_total}</span>
                   </div>
                 ))}
               </div>
 
               {/* Total */}
-              <div className="rounded-2xl p-6 mb-4 flex justify-between items-center" style={{background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)'}}>
-                <span className="text-[10px] font-black uppercase tracking-widest" style={{color: '#64748b'}}>Total Quantity</span>
-                <span className="text-xl font-black text-white">{showInvoice.total_items} UNITS</span>
+              <div className="rounded-2xl p-6 mb-4 flex justify-between items-center bg-slate-50 border border-slate-200">
+                <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Total Quantity</span>
+                <span className="text-xl font-black text-slate-800">{showInvoice.total_items} UNITS</span>
               </div>
-              <div className="rounded-2xl p-6 mb-8 flex justify-between items-center" style={{background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.2)'}}>
-                <span className="text-[10px] font-black uppercase tracking-widest" style={{color: '#34d399'}}>Grand Total</span>
-                <span className="text-3xl font-black text-white">₹{showInvoice.total_amount}</span>
+              <div className="rounded-2xl p-6 mb-8 flex justify-between items-center bg-emerald-500/10 border border-emerald-500/20">
+                <span className="text-[10px] font-black uppercase tracking-widest text-emerald-600">Grand Total</span>
+                <span className="text-3xl font-black text-emerald-600">₹{showInvoice.total_amount}</span>
               </div>
 
               {/* Close Button */}
               <button 
                 onClick={() => setShowInvoice(null)}
-                className="w-full text-white font-black uppercase text-[10px] tracking-widest py-5 rounded-2xl transition-all"
-                style={{background: '#0f172a', border: '1px solid rgba(255,255,255,0.08)'}}
-                onMouseEnter={(e) => (e.currentTarget.style.background = '#10b981')}
-                onMouseLeave={(e) => (e.currentTarget.style.background = '#0f172a')}
+                className="w-full text-white font-black uppercase text-[10px] tracking-widest py-5 rounded-2xl transition-all bg-slate-800 hover:bg-slate-900 border border-slate-700 hover:border-emerald-500/30"
               >
                 ← Back / Close Invoice
               </button>
