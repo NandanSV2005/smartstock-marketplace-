@@ -19,7 +19,7 @@ function ProtectedRoute({ children }: { children: ReactElement }) {
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <div className="flex flex-col items-center">
           <div className="w-10 h-10 border-4 border-primary-600 border-t-transparent rounded-full animate-spin"></div>
-          <p className="mt-4 text-slate-500 text-sm font-black uppercase tracking-widest opacity-50">Auth Sync...</p>
+          <p className="mt-4 text-slate-500 text-sm font-medium">Authenticating...</p>
         </div>
       </div>
     );
@@ -73,17 +73,17 @@ function AppShell({ children }: { children: ReactElement }) {
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans overflow-x-clip transition-colors duration-300">
-      <header className="bg-slate-100 border-b border-slate-200 sticky top-0 z-50 backdrop-blur-xl transition-all">
+      <header className="bg-slate-100 border-b border-slate-200 sticky top-0 z-50 transition-all">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
           <div className="flex items-center space-x-3 cursor-pointer" onClick={() => navigate('/')}>
-            <div className="bg-slate-200 p-1.5 rounded-lg shadow-inner border border-slate-300 flex items-center justify-center">
+            <div className="bg-slate-200 p-1.5 rounded border border-slate-300 flex items-center justify-center">
               <svg className="w-6 h-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
               </svg>
             </div>
             <div>
-              <h1 className="text-lg font-black text-slate-800 tracking-tight leading-none uppercase">SmartStock</h1>
-              <span className="text-[9px] text-primary-500 uppercase tracking-widest font-black">Solutions AI</span>
+              <h1 className="text-lg font-semibold text-slate-800 tracking-tight leading-none">SmartStock</h1>
+              <span className="text-xs text-primary-600 font-medium">Solutions AI</span>
             </div>
           </div>
           
@@ -91,7 +91,7 @@ function AppShell({ children }: { children: ReactElement }) {
             {/* Theme Toggle Button */}
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-xl bg-slate-200 hover:bg-slate-300 border border-slate-300 text-slate-500 hover:text-slate-800 transition-all cursor-pointer flex items-center justify-center"
+              className="p-2 rounded bg-slate-200 hover:bg-slate-300 border border-slate-300 text-slate-600 hover:text-slate-800 transition-all cursor-pointer flex items-center justify-center"
               aria-label="Toggle theme"
             >
               {theme === 'light' ? (
@@ -107,16 +107,16 @@ function AppShell({ children }: { children: ReactElement }) {
 
             {user ? (
               <>
-                <div className="hidden sm:flex items-center bg-slate-200 rounded-full px-3.5 py-1 border border-slate-300">
+                <div className="hidden sm:flex items-center bg-slate-200 rounded px-3 py-1 border border-slate-300">
                   <span className="w-1.5 h-1.5 bg-secondary-500 rounded-full mr-2"></span>
-                  <span className="text-[10px] text-slate-600 font-bold uppercase tracking-widest">
+                  <span className="text-xs text-slate-600 font-medium">
                     {user.role} &bull; {user.email}
                   </span>
                 </div>
                 {isLandingPage && (
                   <button
                     onClick={() => navigate(dashboardPath)}
-                    className="inline-flex items-center px-4.5 py-2 text-xs font-black uppercase tracking-widest text-white bg-primary-600 rounded-xl hover:bg-primary-500 transition-colors shadow-md cursor-pointer animate-scale-in"
+                    className="inline-flex items-center px-4 py-2 text-xs font-semibold text-white bg-primary-600 rounded hover:bg-primary-500 transition-colors shadow-sm cursor-pointer"
                   >
                     Portal
                   </button>
@@ -124,7 +124,7 @@ function AppShell({ children }: { children: ReactElement }) {
                 <button 
                   type="button"
                   onClick={handleLogout}
-                  className="inline-flex items-center px-4.5 py-2 text-xs font-black uppercase tracking-widest text-white bg-error-600 rounded-xl hover:bg-error-500 transition-colors shadow-md cursor-pointer"
+                  className="inline-flex items-center px-4 py-2 text-xs font-semibold text-white bg-error-600 rounded hover:bg-error-500 transition-colors shadow-sm cursor-pointer"
                 >
                   Logout
                 </button>
@@ -132,7 +132,7 @@ function AppShell({ children }: { children: ReactElement }) {
             ) : (
               <button 
                 onClick={() => navigate('/login')}
-                className="btn-primary py-2 px-6 text-xs uppercase tracking-widest font-black"
+                className="btn-primary py-2 px-4 text-xs font-semibold"
               >
                 Sign In
               </button>
@@ -146,8 +146,8 @@ function AppShell({ children }: { children: ReactElement }) {
       </main>
 
       {!(isLandingPage || isLoginPage) && (
-        <footer className="py-12 mt-auto border-t border-slate-200 text-center bg-slate-100/50 backdrop-blur-md">
-          <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest opacity-60">© 2026 SmartStock Solutions • Next-Gen Supply Chain Infrastructure</p>
+        <footer className="py-8 mt-auto border-t border-slate-200 text-center bg-slate-100">
+          <p className="text-xs font-normal text-slate-500">© 2026 SmartStock Solutions • Next-Gen Supply Chain Infrastructure</p>
         </footer>
       )}
     </div>
