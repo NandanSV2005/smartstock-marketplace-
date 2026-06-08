@@ -125,8 +125,29 @@ export function LandingPage() {
     }
   ];
 
+  const storySignals = [
+    {
+      label: 'Forecast',
+      value: '94.2%',
+      detail: 'Confidence score',
+      tone: 'text-primary-400 bg-primary-500/15 border-primary-500/20',
+    },
+    {
+      label: 'Dispatch',
+      value: '2.4 hrs',
+      detail: 'Depot to store ETA',
+      tone: 'text-emerald-400 bg-emerald-400/15 border-emerald-400/20',
+    },
+    {
+      label: 'Trust',
+      value: '98.2',
+      detail: 'Retailer ledger score',
+      tone: 'text-amber-400 bg-amber-400/15 border-amber-400/20',
+    },
+  ];
+
   return (
-    <div className="w-full bg-slate-50 transition-colors duration-300 overflow-x-hidden">
+    <div className="w-full bg-slate-50 transition-colors duration-300 overflow-x-clip">
       
       {/* Immersive Hero Section */}
       <section className="relative min-h-[95vh] flex flex-col justify-center items-center text-center px-4 sm:px-6 lg:px-8 pt-12 apple-glow-bg">
@@ -254,11 +275,12 @@ export function LandingPage() {
       {/* Sticky Storytelling Section */}
       <section id="storytelling" ref={storySectionRef} className="relative bg-slate-50 py-24 border-t border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="lg:grid lg:grid-cols-2 lg:gap-16 items-start">
+          <div className="lg:grid lg:grid-cols-2 lg:gap-16 lg:items-stretch">
             
             {/* Left Column: Sticky visualizer */}
-            <div className="hidden lg:block sticky top-28 self-start z-20">
-              <div className="w-full max-w-lg rounded-3xl relative overflow-hidden" style={{background: 'linear-gradient(135deg, #0f0f12 0%, #18181f 100%)', border: '1px solid rgba(255,255,255,0.07)', boxShadow: '0 32px 80px rgba(0,0,0,0.5)'}}>
+            <div className="hidden lg:block relative z-20">
+              <div className="sticky top-28">
+              <div className="w-full max-w-lg rounded-3xl relative overflow-hidden min-h-[520px]" style={{background: 'linear-gradient(135deg, #0f0f12 0%, #18181f 100%)', border: '1px solid rgba(255,255,255,0.07)', boxShadow: '0 32px 80px rgba(0,0,0,0.5)'}}>
                 
                 {/* Ambient glow */}
                 <div className={`absolute inset-0 pointer-events-none transition-all duration-1000 ${
@@ -272,8 +294,8 @@ export function LandingPage() {
                 }`} style={{background: 'radial-gradient(circle at 50% 50%, rgba(245,158,11,0.15) 0%, transparent 60%)'}}></div>
 
                 {/* ── STORY 0: AI Forecast Dashboard ── */}
-                <div className={`transition-all duration-500 absolute inset-0 flex flex-col ${
-                  activeStory === 0 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'
+                <div className={`transition-all duration-500 flex flex-col ${
+                  activeStory === 0 ? 'relative opacity-100 translate-y-0' : 'absolute inset-0 opacity-0 translate-y-4 pointer-events-none'
                 }`}>
                   <div className="p-6 flex flex-col h-full">
                     {/* Header */}
@@ -329,8 +351,8 @@ export function LandingPage() {
                 </div>
 
                 {/* ── STORY 1: Logistics & Wholesaler ── */}
-                <div className={`transition-all duration-500 absolute inset-0 flex flex-col ${
-                  activeStory === 1 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'
+                <div className={`transition-all duration-500 flex flex-col ${
+                  activeStory === 1 ? 'relative opacity-100 translate-y-0' : 'absolute inset-0 opacity-0 translate-y-4 pointer-events-none'
                 }`}>
                   <div className="p-6 flex flex-col h-full">
                     {/* Header */}
@@ -397,8 +419,8 @@ export function LandingPage() {
                 </div>
 
                 {/* ── STORY 2: Trust & Credit ── */}
-                <div className={`transition-all duration-500 absolute inset-0 flex flex-col ${
-                  activeStory === 2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'
+                <div className={`transition-all duration-500 flex flex-col ${
+                  activeStory === 2 ? 'relative opacity-100 translate-y-0' : 'absolute inset-0 opacity-0 translate-y-4 pointer-events-none'
                 }`}>
                   <div className="p-6 flex flex-col h-full">
                     {/* Header */}
@@ -481,8 +503,25 @@ export function LandingPage() {
                   <span className="text-[9px] text-slate-500 font-mono">{activeStory + 1} / 3</span>
                 </div>
 
-                {/* Spacer to ensure card has min height */}
-                <div className="h-[460px] pointer-events-none"></div>
+              </div>
+
+              <div className="mt-5 w-full max-w-lg grid grid-cols-3 gap-3">
+                {storySignals.map((signal, index) => (
+                  <button
+                    key={signal.label}
+                    onClick={() => setActiveStory(index)}
+                    className={`text-left rounded-2xl border p-4 transition-all duration-300 ${
+                      activeStory === index
+                        ? signal.tone
+                        : 'border-slate-200 bg-slate-100 text-slate-500 hover:border-slate-300'
+                    }`}
+                  >
+                    <span className="block text-[9px] font-black uppercase tracking-widest">{signal.label}</span>
+                    <span className="block text-lg font-black text-slate-800 mt-1">{signal.value}</span>
+                    <span className="block text-[9px] font-bold uppercase tracking-wide text-slate-500 mt-1">{signal.detail}</span>
+                  </button>
+                ))}
+              </div>
               </div>
             </div>
 
@@ -513,6 +552,18 @@ export function LandingPage() {
                 <p className="text-slate-500 text-lg sm:text-xl leading-relaxed font-medium max-w-xl">
                   Connect instantly to FMCG and grocery wholesalers. Orders pass through automated pipeline processing, syncing active inventories and providing secure, lock-in price snapshots to defend against pricing drift.
                 </p>
+                <div className="hidden lg:grid grid-cols-2 gap-4 max-w-xl">
+                  <div className="rounded-2xl border border-slate-200 bg-slate-100 p-5">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-emerald-400">Pipeline Load</span>
+                    <p className="text-2xl font-black text-slate-800 mt-2">121 SKUs</p>
+                    <p className="text-xs font-semibold leading-relaxed text-slate-500 mt-2">Grouped into three active supplier runs with live status updates.</p>
+                  </div>
+                  <div className="rounded-2xl border border-slate-200 bg-slate-100 p-5">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-primary-500">Price Control</span>
+                    <p className="text-2xl font-black text-slate-800 mt-2">Locked</p>
+                    <p className="text-xs font-semibold leading-relaxed text-slate-500 mt-2">Order values are snapshotted before dispatch to prevent rate drift.</p>
+                  </div>
+                </div>
                 <div className="lg:hidden p-6 bg-slate-100 rounded-2xl border border-slate-200">
                   <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Live Feature Preview</span>
                   <p className="text-sm text-slate-700 font-bold uppercase tracking-tight">Cargo Status: Dispatched from Depot</p>
@@ -528,6 +579,18 @@ export function LandingPage() {
                 <p className="text-slate-500 text-lg sm:text-xl leading-relaxed font-medium max-w-xl">
                   Eliminate paperwork. Retailers build high-trust profiles automatically by conducting trade transactions. Wholesalers deploy custom credit term triggers to repeat partners without running traditional manual risk underwriting.
                 </p>
+                <div className="hidden lg:grid grid-cols-2 gap-4 max-w-xl">
+                  <div className="rounded-2xl border border-slate-200 bg-slate-100 p-5">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-amber-400">Credit Health</span>
+                    <p className="text-2xl font-black text-slate-800 mt-2">Top 4%</p>
+                    <p className="text-xs font-semibold leading-relaxed text-slate-500 mt-2">Retailer reliability is computed from paid invoices and order cadence.</p>
+                  </div>
+                  <div className="rounded-2xl border border-slate-200 bg-slate-100 p-5">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-emerald-400">Ledger Trail</span>
+                    <p className="text-2xl font-black text-slate-800 mt-2">847</p>
+                    <p className="text-xs font-semibold leading-relaxed text-slate-500 mt-2">Verified transactions feed automatic credit terms for repeat partners.</p>
+                  </div>
+                </div>
                 <div className="lg:hidden p-6 bg-slate-100 rounded-2xl border border-slate-200">
                   <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Live Feature Preview</span>
                   <p className="text-sm text-slate-700 font-bold uppercase tracking-tight">Reputation Score: 98.2 / High Trust</p>
@@ -612,29 +675,29 @@ export function LandingPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
             
-            <div className="space-y-2 scroll-reveal">
-              <p className="text-5xl sm:text-6xl font-black text-slate-800 uppercase tracking-tighter">
-                ₹{stats.volume > 0 ? `${stats.volume}.5B+` : '0B'}
+            <div className="space-y-2">
+              <p className="text-5xl sm:text-6xl font-black text-slate-800 uppercase tracking-tighter transition-all duration-700">
+                ₹{stats.volume > 0 ? `${stats.volume}.5B+` : '4.5B+'}
               </p>
               <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Total Trade Volume</p>
             </div>
 
-            <div className="space-y-2 scroll-reveal">
-              <p className="text-5xl sm:text-6xl font-black text-slate-800 uppercase tracking-tighter">
-                {stats.retailers.toLocaleString()}+
+            <div className="space-y-2">
+              <p className="text-5xl sm:text-6xl font-black text-slate-800 uppercase tracking-tighter transition-all duration-700">
+                {stats.retailers > 0 ? stats.retailers.toLocaleString() : '12,000'}+
               </p>
               <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Active Retailers</p>
             </div>
 
-            <div className="space-y-2 scroll-reveal">
-              <p className="text-5xl sm:text-6xl font-black text-slate-800 uppercase tracking-tighter">
-                {stats.accuracy}%
+            <div className="space-y-2">
+              <p className="text-5xl sm:text-6xl font-black text-slate-800 uppercase tracking-tighter transition-all duration-700">
+                {stats.accuracy > 0 ? stats.accuracy : '99'}%
               </p>
               <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Prediction Accuracy</p>
             </div>
 
-            <div className="space-y-2 scroll-reveal">
-              <p className="text-5xl sm:text-6xl font-black text-slate-800 uppercase tracking-tighter">
+            <div className="space-y-2">
+              <p className="text-5xl sm:text-6xl font-black text-slate-800 uppercase tracking-tighter transition-all duration-700">
                 &lt; {stats.dispatch}h
               </p>
               <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Wholesaler Dispatch Time</p>

@@ -1,0 +1,19 @@
+{
+  "venvPath": ".",
+  "venv": ".venv",
+  "pythonVersion": "3.14",
+  "pythonPlatform": "Windows",
+  "include": [
+    "smartstock_backend"
+  ],
+  "exclude": [
+    "frontend",
+    ".venv",
+    "**/__pycache__",
+    "**/migrations"
+  ],
+  "typeCheckingMode": "off",
+  "reportMissingImports": "none",
+  "reportMissingModuleSource": "none",
+  "reportUndefinedVariable": "warning"
+}

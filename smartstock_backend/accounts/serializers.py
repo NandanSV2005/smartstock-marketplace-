@@ -27,9 +27,10 @@ class RetailerRegistrationSerializer(serializers.Serializer):
     pincode = serializers.CharField(max_length=10)
 
     def validate_email(self, value: str) -> str:
-        if User.objects.filter(email__iexact=value).exists():
+        email = value.strip().lower()
+        if User.objects.filter(email__iexact=email).exists():
             raise serializers.ValidationError("A user with this email already exists.")
-        return value
+        return email
 
     @transaction.atomic
     def create(self, validated_data):
@@ -65,9 +66,10 @@ class WholesalerRegistrationSerializer(serializers.Serializer):
     pincode = serializers.CharField(max_length=10)
 
     def validate_email(self, value: str) -> str:
-        if User.objects.filter(email__iexact=value).exists():
+        email = value.strip().lower()
+        if User.objects.filter(email__iexact=email).exists():
             raise serializers.ValidationError("A user with this email already exists.")
-        return value
+        return email
 
     @transaction.atomic
     def create(self, validated_data):
@@ -87,4 +89,3 @@ class WholesalerRegistrationSerializer(serializers.Serializer):
 
         Wholesaler.objects.create(user=user, **validated_data)
         return user
-

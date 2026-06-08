@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from accounts.models import Retailer, Wholesaler
 from accounts.serializers import (
@@ -23,6 +24,12 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         return token
 
     def validate(self, attrs):
+        username = attrs.get(self.username_field)
+        if username and "@" in username:
+            user = User.objects.filter(email__iexact=username.strip()).only("username").first()
+            if user:
+                attrs[self.username_field] = user.get_username()
+
         data = super().validate(attrs)
         data["user"] = UserSerializer(self.user).data
         return data
@@ -39,7 +46,12 @@ class RetailerRegisterView(APIView):
         serializer = RetailerRegistrationSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
-        return Response(UserSerializer(user).data, status=status.HTTP_201_CREATED)
+        refresh = RefreshToken.for_user(user)
+        return Response({
+            "access": str(refresh.access_token),
+            "refresh": str(refresh),
+            "user": UserSerializer(user).data
+        }, status=status.HTTP_201_CREATED)
 
 
 class WholesalerRegisterView(APIView):
@@ -49,7 +61,12 @@ class WholesalerRegisterView(APIView):
         serializer = WholesalerRegistrationSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
-        return Response(UserSerializer(user).data, status=status.HTTP_201_CREATED)
+        refresh = RefreshToken.for_user(user)
+        return Response({
+            "access": str(refresh.access_token),
+            "refresh": str(refresh),
+            "user": UserSerializer(user).data
+        }, status=status.HTTP_201_CREATED)
 
 
 class MeView(APIView):
@@ -81,4 +98,3 @@ class MeView(APIView):
             }
 
         return Response(data)
-

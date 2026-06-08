@@ -53,11 +53,12 @@ export function LoginPage() {
     setLoading(true);
     try {
       let loggedInUser;
+      const normalizedEmail = email.trim().toLowerCase();
       if (isLogin) {
-        loggedInUser = await loginWithPassword(email, password);
+        loggedInUser = await loginWithPassword(normalizedEmail, password);
       } else {
         loggedInUser = await signup({ 
-          email, 
+          email: normalizedEmail,
           password, 
           first_name: firstName, 
           last_name: lastName, 
