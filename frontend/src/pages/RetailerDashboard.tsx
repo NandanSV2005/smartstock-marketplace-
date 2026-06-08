@@ -366,7 +366,7 @@ export function RetailerDashboard() {
    <div className="flex flex-wrap items-start justify-between mb-8 gap-6">
     <div className="flex-1 min-w-0">
      <div className="flex items-center gap-3 mb-1.5">
-      <div className="w-1 h-6 bg-primary-600 flex-shrink-0" />
+      <div className="w-1 h-6 bg-blue-600 flex-shrink-0" />
       <h2 className="text-2xl font-semibold text-slate-800">
        Retailer Portal
       </h2>
@@ -376,25 +376,25 @@ export function RetailerDashboard() {
      </p>
     </div>
     <div className="flex flex-wrap gap-1.5 items-center">
-     <button onClick={() => { setActiveTab('dashboard'); navigate('/retailer/dashboard'); }} className={`tab-pill${activeTab === 'dashboard' ? ' active' : ''}`}>
+     <button onClick={() => { setActiveTab('dashboard'); navigate('/retailer/dashboard'); }} className={`tab-pill ${activeTab === 'dashboard' ? 'bg-indigo-500 text-white shadow-tactile-indigo' : 'bg-slate-100 hover:bg-slate-200 text-slate-650'}`}>
       Dashboard
      </button>
-     <button onClick={() => { setActiveTab('marketplace'); navigate('/retailer/dashboard'); }} className={`tab-pill${activeTab === 'marketplace' ? ' active' : ''}`}>
+     <button onClick={() => { setActiveTab('marketplace'); navigate('/retailer/dashboard'); }} className={`tab-pill ${activeTab === 'marketplace' ? 'bg-orange-500 text-white shadow-tactile-primary' : 'bg-slate-100 hover:bg-slate-200 text-slate-650'}`}>
       Marketplace
      </button>
-     <button onClick={() => { setActiveTab('cart'); navigate('/retailer/dashboard'); }} className={`tab-pill${activeTab === 'cart' ? ' active' : ''}`}>
+     <button onClick={() => { setActiveTab('cart'); navigate('/retailer/dashboard'); }} className={`tab-pill ${activeTab === 'cart' ? 'bg-orange-500 text-white shadow-tactile-primary' : 'bg-slate-100 hover:bg-slate-200 text-slate-650'}`}>
       <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
       Cart {cart.data.items.length > 0 && <span className="ml-1 bg-white/20 rounded-full px-1.5 py-0.5 text-xs">{cart.data.items.length}</span>}
      </button>
-     <button onClick={() => { setActiveTab('inventory'); navigate('/retailer/dashboard'); }} className={`tab-pill${activeTab === 'inventory' ? ' active' : ''}`}>
+     <button onClick={() => { setActiveTab('inventory'); navigate('/retailer/dashboard'); }} className={`tab-pill ${activeTab === 'inventory' ? 'bg-blue-500 text-white shadow-tactile-blue' : 'bg-slate-100 hover:bg-slate-200 text-slate-650'}`}>
       <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
       Inventory
      </button>
-     <button onClick={() => { setActiveTab('ledger'); navigate('/retailer/dashboard'); }} className={`tab-pill${activeTab === 'ledger' ? ' active' : ''}`}>
+     <button onClick={() => { setActiveTab('ledger'); navigate('/retailer/dashboard'); }} className={`tab-pill ${activeTab === 'ledger' ? 'bg-emerald-500 text-white shadow-tactile-emerald' : 'bg-slate-100 hover:bg-slate-200 text-slate-650'}`}>
       <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
       Ledger
      </button>
-     <button onClick={() => navigate('/sales/record')} className={`tab-pill${activeTab === 'sales' ? ' active' : ''}`}>
+     <button onClick={() => navigate('/sales/record')} className={`tab-pill ${activeTab === 'sales' ? 'bg-emerald-500 text-white shadow-tactile-emerald' : 'bg-slate-100 hover:bg-slate-200 text-slate-650'}`}>
       <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
       Sales
      </button>
@@ -443,10 +443,10 @@ export function RetailerDashboard() {
      {/* Financial Overview KPIs */}
      <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-2">
       {/* Monthly Sales */}
-      <div className="kpi-card stagger-1 animate-fade-in">
+      <div className="kpi-card bg-emerald-50/50 dark:bg-emerald-950/10 border-emerald-250 dark:border-emerald-500/20 shadow-sm shadow-tactile-emerald hover:border-emerald-400 stagger-1 animate-fade-in">
        <div className="flex items-start justify-between mb-4">
-        <div className="w-10 h-10 rounded-lg bg-slate-100 dark:bg-white/5 flex items-center justify-center border border-slate-200 dark:border-white/5">
-         <svg className="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+        <div className="w-10 h-10 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center border border-emerald-200 dark:border-emerald-500/20 text-emerald-600">
+         <svg className="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
         </div>
         <span className="badge badge-green">Revenue</span>
        </div>
@@ -454,20 +454,20 @@ export function RetailerDashboard() {
        <p className="stat-value text-slate-800">₹{kpis.data?.total_sales_revenue?.toLocaleString() || 0}</p>
       </div>
       {/* Orders This Month */}
-      <div className="kpi-card stagger-2 animate-fade-in">
+      <div className="kpi-card bg-indigo-50/50 dark:bg-indigo-950/10 border-indigo-205 dark:border-indigo-500/20 shadow-sm shadow-tactile-indigo hover:border-indigo-400 stagger-2 animate-fade-in">
        <div className="flex items-start justify-between mb-4">
-        <div className="w-10 h-10 rounded-lg bg-slate-100 dark:bg-white/5 flex items-center justify-center border border-slate-200 dark:border-white/5">
-         <svg className="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+        <div className="w-10 h-10 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center border border-emerald-200 dark:border-emerald-500/20 text-emerald-600">
+         <svg className="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
         </div>
        </div>
        <p className="text-xs font-medium text-slate-500 mb-1">Orders This Month</p>
        <p className="stat-value text-slate-800">{kpis.data?.orders_this_month || 0}</p>
       </div>
       {/* Outstanding Credit */}
-      <div className="kpi-card stagger-3 animate-fade-in">
+      <div className="kpi-card bg-rose-50/50 dark:bg-rose-950/10 border-rose-250 dark:border-rose-500/20 shadow-sm shadow-tactile-rose hover:border-rose-450 stagger-3 animate-fade-in">
        <div className="flex items-start justify-between mb-4">
-        <div className="w-10 h-10 rounded-lg bg-slate-100 dark:bg-white/5 flex items-center justify-center border border-slate-200 dark:border-white/5">
-         <svg className="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <div className="w-10 h-10 rounded-lg bg-rose-100 dark:bg-rose-900/30 flex items-center justify-center border border-rose-200 dark:border-rose-500/20 text-rose-500">
+         <svg className="w-5 h-5 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
         </div>
         {(kpis.data?.outstanding_credit ?? 0) > 0 && <span className="badge badge-red">Due</span>}
        </div>
@@ -475,14 +475,14 @@ export function RetailerDashboard() {
        <p className="stat-value text-red-500">₹{kpis.data?.outstanding_credit?.toLocaleString() || 0}</p>
       </div>
       {/* Low Stock Items */}
-      <div className="kpi-card stagger-4 animate-fade-in">
+      <div className="kpi-card bg-amber-50/50 dark:bg-amber-950/10 border-amber-250 dark:border-amber-500/20 shadow-sm shadow-tactile-amber hover:border-amber-450 stagger-4 animate-fade-in">
        <div className="flex items-start justify-between mb-4">
-        <div className="w-10 h-10 rounded-lg bg-slate-100 dark:bg-white/5 flex items-center justify-center border border-slate-200 dark:border-white/5">
+        <div className="w-10 h-10 rounded-lg bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center border border-amber-200 dark:border-amber-500/20 text-amber-500">
          <svg className="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
         </div>
         {(kpis.data?.low_stock_count ?? 0) > 0 && <span className="badge badge-yellow">Alert</span>}
        </div>
-       <p className="text-xs font-medium text-slate-500 mb-1">Low Stock Items</p>
+       <p className="text-xs font-semibold text-amber-800/80 dark:text-amber-300/80 mb-1">Low Stock Items</p>
        <p className={`stat-value ${(kpis.data?.low_stock_count ?? 0) > 0 ? 'text-amber-500' : 'text-slate-800'}`}>{kpis.data?.low_stock_count || 0}</p>
       </div>
      </div>
@@ -490,12 +490,12 @@ export function RetailerDashboard() {
      {/* Charts Section */}
      <div className="lg:col-span-3 grid grid-cols-1 lg:grid-cols-2 gap-6 mb-2">
       {/* Sales Trend Chart */}
-      <div className="dash-section p-6">
+      <div className="dash-section p-6 border-emerald-200 dark:border-emerald-900/40 bg-emerald-50/20 dark:bg-emerald-950/5 shadow-sm shadow-tactile-emerald">
        <div className="flex items-center gap-2.5 mb-6">
-        <div className="w-7 h-7 rounded bg-blue-500/10 border border-blue-500/20 flex items-center justify-center flex-shrink-0">
-         <svg className="w-3.5 h-3.5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/></svg>
+        <div className="w-7 h-7 rounded bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center flex-shrink-0 text-emerald-500">
+         <svg className="w-3.5 h-3.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/></svg>
         </div>
-        <h4 className="text-xs font-semibold text-slate-500">Sales Trend (30 Days)</h4>
+        <h4 className="text-xs font-semibold text-emerald-800 dark:text-emerald-300">Sales Trend (30 Days)</h4>
        </div>
        <div className="h-64">
         <ResponsiveContainer width="100%" height="100%">
@@ -504,22 +504,22 @@ export function RetailerDashboard() {
           <XAxis dataKey="date" stroke="#64748b" fontSize={11} tickFormatter={(tick) => {try {return new Date(tick).toLocaleDateString(undefined, {month: 'short', day: 'numeric'})} catch(e) {return tick}}} />
           <YAxis stroke="#64748b" fontSize={11} axisLine={false} tickLine={false} />
           <Tooltip 
-           contentStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.8)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '0.5rem', fontSize: '11px', color: '#ffffff', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.3)' }}
+           contentStyle={{ backgroundColor: 'var(--card-bg)', backdropFilter: 'blur(12px)', border: '1px solid #10b981', borderRadius: '0.5rem', fontSize: '11px', color: 'var(--color-slate-800)', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.3)' }}
            labelFormatter={(label) => {try {return new Date(label).toLocaleDateString()} catch(e) {return label}}}
           />
-          <Area type="monotone" dataKey="total_revenue" name="Revenue" stroke="#6366f1" strokeWidth={1.5} fill="#6366f1" fillOpacity={0.08} />
+          <Area type="monotone" dataKey="total_revenue" name="Revenue" stroke="#10b981" strokeWidth={2} fill="#10b981" fillOpacity={0.15} />
          </AreaChart>
         </ResponsiveContainer>
        </div>
       </div>
 
       {/* Inventory Levels Chart */}
-      <div className="dash-section p-6">
+      <div className="dash-section p-6 border-emerald-200 dark:border-emerald-900/40 bg-emerald-50/20 dark:bg-emerald-950/5 shadow-sm shadow-tactile-emerald">
        <div className="flex items-center gap-2.5 mb-6">
         <div className="w-7 h-7 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center flex-shrink-0">
-         <svg className="w-3.5 h-3.5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+         <svg className="w-3.5 h-3.5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
         </div>
-        <h4 className="text-xs font-semibold text-slate-500">Critical Inventory Levels</h4>
+        <h4 className="text-xs font-semibold text-blue-800 dark:text-blue-300">Critical Inventory Levels</h4>
        </div>
        <div className="h-64">
         <ResponsiveContainer width="100%" height="100%">
@@ -528,10 +528,11 @@ export function RetailerDashboard() {
           <XAxis dataKey="name" stroke="#64748b" fontSize={11} angle={-45} textAnchor="end" height={60} />
           <YAxis stroke="#64748b" fontSize={11} axisLine={false} tickLine={false} />
           <Tooltip 
-           contentStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.8)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '0.5rem', fontSize: '11px', color: '#ffffff', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.3)' }}
+           contentStyle={{ backgroundColor: 'var(--card-bg)', backdropFilter: 'blur(12px)', border: '1px solid #10b981', borderRadius: '0.5rem', fontSize: '11px', color: 'var(--color-slate-800)', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.3)' }}
            cursor={{fill: 'rgba(255, 255, 255, 0.03)'}}
           />
-          <Bar dataKey="current_stock" name="Current Stock" fill="#6366f1" fillOpacity={0.85} radius={[3, 3, 0, 0]} />
+          <Tooltip contentStyle={{ backgroundColor: 'var(--card-bg)', backdropFilter: 'blur(12px)', border: '1px solid #3b82f6', borderRadius: '0.5rem', fontSize: '11px', color: 'var(--color-slate-800)', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.3)' }} />
+          <Bar dataKey="current_stock" name="Current Stock" fill="#3b82f6" fillOpacity={0.85} radius={[3, 3, 0, 0]} />
           <Bar dataKey="reorder_level" name="Reorder Level" fill="#f59e0b" fillOpacity={0.7} radius={[3, 3, 0, 0]} />
          </BarChart>
         </ResponsiveContainer>
@@ -540,17 +541,17 @@ export function RetailerDashboard() {
      </div>
 
      {/* SmartStock AI Block — Real-Time Insights with Reorder Now */}
-     <section className="lg:col-span-3 relative overflow-hidden rounded-lg p-6 bg-slate-900 border border-slate-800 text-white shadow">
+     <section className="lg:col-span-3 relative overflow-hidden rounded-xl p-6 bg-fuchsia-50 dark:bg-fuchsia-950/10 border border-fuchsia-200 dark:border-fuchsia-500/20 text-fuchsia-900 dark:text-fuchsia-100 shadow-sm shadow-tactile-fuchsia">
       <div className="flex items-center justify-between mb-5">
        <div className="flex items-center gap-3">
-        <div className="w-9 h-9 rounded bg-orange-500/20 border border-orange-500/30 flex items-center justify-center">
-         <svg className="w-5 h-5 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        <div className="w-9 h-9 rounded bg-fuchsia-100 dark:bg-fuchsia-950/30 border border-fuchsia-250 dark:border-fuchsia-500/20 flex items-center justify-center text-fuchsia-600">
+         <svg className="w-5 h-5 text-fuchsia-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
         </div>
-        <h3 className="text-base font-semibold text-white">Smart Stock Assistant</h3>
+        <h3 className="text-base font-semibold text-fuchsia-950 dark:text-fuchsia-50">Smart Stock Assistant</h3>
        </div>
        <button
         onClick={handleGenerateInsights}
-        className="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded transition-all font-medium flex items-center gap-1.5 text-white"
+        className="text-xs btn-tactile-fuchsia px-3 py-1.5 rounded font-semibold flex items-center gap-1.5 shadow-tactile-fuchsia active:scale-[0.98]"
        >
         <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
         Update Alerts
@@ -568,7 +569,7 @@ export function RetailerDashboard() {
          .filter(i => i.alert_level !== 'ok' && i.alert_level !== 'no_data')
          .slice(0, 6)
          .map((insight) => (
-          <div key={insight.product_id} className="bg-slate-800 rounded border border-slate-700 p-4 transition-all flex flex-col">
+          <div key={insight.product_id} className="bg-white dark:bg-[#0c0c0e] rounded-xl border border-fuchsia-200 dark:border-fuchsia-500/20 p-4 transition-all flex flex-col shadow-sm hover:shadow-tactile-fuchsia hover:border-fuchsia-400">
            <div className="flex justify-between items-start mb-3">
             <span className={`badge ${
              insight.alert_level === 'critical' ? 'badge-red' :
@@ -577,20 +578,20 @@ export function RetailerDashboard() {
             }`}>
              {insight.alert_level.replace('_', ' ')}
             </span>
-            <span className="text-xs text-slate-400">
+            <span className="text-xs text-fuchsia-600/70 dark:text-fuchsia-300/70 font-medium">
              {insight.days_to_stockout !== null ? `${insight.days_to_stockout}d left` : 'below min'}
             </span>
            </div>
-           <div className="font-semibold text-white text-sm leading-tight mb-1">
+           <div className="font-semibold text-fuchsia-950 dark:text-fuchsia-100 text-sm leading-tight mb-1">
             {insight.product}
            </div>
-           <div className="text-xs text-slate-300 mt-1 leading-relaxed flex-1">
+           <div className="text-xs text-fuchsia-800/80 dark:text-fuchsia-300/80 mt-1 leading-relaxed flex-1">
             {insight.message}
            </div>
            {insight.action && (
-            <div className="mt-4 pt-3 border-t border-slate-700">
+            <div className="mt-4 pt-3 border-t border-fuchsia-200/50 dark:border-fuchsia-500/20">
              <div className="flex items-center justify-between mb-2">
-              <span className="text-xs text-slate-400 font-medium">
+              <span className="text-xs text-fuchsia-600/70 dark:text-fuchsia-300/70 font-medium">
                via {insight.action.supplier_name}
               </span>
               <span className="text-xs font-semibold text-emerald-400">
@@ -623,12 +624,12 @@ export function RetailerDashboard() {
       )}
      </section>
 
-     <section className="dash-section p-6">
+     <section className="dash-section p-6 border-amber-200 dark:border-amber-500/20 bg-amber-50/50 dark:bg-amber-950/10 shadow-sm shadow-tactile-amber">
       <div className="flex items-center gap-3 mb-6 pb-4 border-b border-slate-200">
        <div className="w-8 h-8 rounded bg-red-500/10 border border-red-500/20 flex items-center justify-center flex-shrink-0">
         <svg className="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
        </div>
-       <h3 className="text-sm font-semibold text-slate-800">Low Stock Warnings</h3>
+       <h3 className="text-sm font-semibold text-amber-900 dark:text-amber-100">Low Stock Warnings</h3>
       </div>
       {inventory.loading ? (
        <p className="text-xs text-slate-500 animate-pulse font-medium">Checking Stock...</p>
@@ -646,8 +647,8 @@ export function RetailerDashboard() {
         {lowStockItems.map((item) => (
          <li key={item.id} className="py-3 flex justify-between items-center group">
           <div>
-           <p className="text-sm font-medium text-slate-800 group-hover:text-primary-600 transition-colors">{item.product.name}</p>
-           <p className="text-xs text-slate-500">Reorder Level: {item.reorder_level}</p>
+           <p className="text-sm font-semibold text-amber-900 dark:text-amber-100 group-hover:text-orange-600 transition-colors">{item.product.name}</p>
+           <p className="text-xs text-amber-600/75 dark:text-amber-300/75">Reorder Level: {item.reorder_level}</p>
           </div>
           <span className="badge badge-red">
            {item.current_stock} {item.product.unit}
@@ -658,12 +659,12 @@ export function RetailerDashboard() {
       )}
      </section>
 
-     <section className="dash-section p-6 lg:col-span-2">
+     <section className="dash-section p-6 lg:col-span-2 border-indigo-200 dark:border-indigo-500/20 bg-indigo-50/50 dark:bg-indigo-950/10 shadow-sm shadow-tactile-indigo">
       <div className="flex items-center gap-3 mb-6 pb-4 border-b border-slate-200">
        <div className="w-8 h-8 rounded bg-primary-500/10 border border-primary-500/20 flex items-center justify-center flex-shrink-0">
         <svg className="w-4 h-4 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
        </div>
-       <h3 className="text-sm font-semibold text-slate-800">Recent Orders</h3>
+       <h3 className="text-sm font-semibold text-indigo-900 dark:text-indigo-100">Recent Orders</h3>
       </div>
       {orders.loading ? (
        <p className="text-xs text-slate-500 animate-pulse font-medium">Loading Orders...</p>
@@ -676,16 +677,16 @@ export function RetailerDashboard() {
       ) : (
        <ul className="divide-y divide-slate-200">
         {recentOrders.map((order) => (
-         <li key={order.id} className="py-4 flex justify-between items-center hover:bg-slate-50 hover:bg-slate-200/40 transition-colors px-2 rounded">
+         <li key={order.id} className="py-4 flex justify-between items-center hover:bg-indigo-100/50 dark:hover:bg-indigo-950/30 transition-colors px-3 rounded-lg border border-transparent hover:border-indigo-100 dark:hover:border-indigo-900/50">
           <div className="flex flex-col">
-           <span className="text-sm font-semibold text-slate-800">#{order.order_number}</span>
-           <span className="text-xs text-slate-500 mt-1 font-medium">Total: ₹{parseFloat(order.total_amount.toString()).toFixed(2)}</span>
+           <span className="text-sm font-semibold text-indigo-950 dark:text-indigo-50">#{order.order_number}</span>
+           <span className="text-xs text-indigo-700/80 dark:text-indigo-300/80 mt-1 font-semibold">Total: ₹{parseFloat(order.total_amount.toString()).toFixed(2)}</span>
           </div>
           <div className="flex items-center space-x-3">
            {order.status === 'dispatched' && (
             <button
              onClick={() => handleMarkAsReceived(order.id)}
-             className="px-2.5 py-1 text-xs font-medium bg-emerald-600 text-white rounded hover:bg-emerald-700 transition-all shadow-sm flex items-center"
+             className="px-2.5 py-1 text-xs font-semibold btn-tactile-emerald shadow-tactile-emerald flex items-center"
             >
              Order Received
             </button>
@@ -703,7 +704,7 @@ export function RetailerDashboard() {
    )}
 
    {activeTab === 'marketplace' && (
-    <div className="dash-section p-6 relative">
+    <div className="dash-section p-6 border-orange-200 dark:border-orange-500/20 bg-orange-50/20 dark:bg-orange-950/5 shadow-sm shadow-tactile-primary relative">
      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
       <div className="flex items-center gap-3">
        <div className="w-10 h-10 rounded bg-slate-100 flex items-center justify-center border border-slate-200">
@@ -727,7 +728,7 @@ export function RetailerDashboard() {
      ) : (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
        {marketplace.data.map(wp => (
-        <div key={wp.id} className="group bg-slate-100 rounded border border-slate-200 p-4 transition-all flex flex-col relative overflow-hidden shadow-sm">
+        <div key={wp.id} className="group bg-white dark:bg-[#0c0c0e] rounded-xl border border-orange-200 dark:border-orange-500/20 p-4 transition-all flex flex-col relative overflow-hidden shadow-sm hover:shadow-tactile-primary hover:border-orange-400">
          <div className="absolute top-3 right-3 z-10">
            {wp.available_stock < wp.min_order_qty ? (
             <span className="badge badge-red">Stock Out</span>
@@ -735,7 +736,7 @@ export function RetailerDashboard() {
             <span className="badge badge-blue">In Stock</span>
            )}
          </div>
-         <div className="aspect-video w-full overflow-hidden rounded bg-slate-50 dark:bg-slate-850 flex items-center justify-center mb-4 min-h-[140px] border border-slate-200">
+         <div className="aspect-video w-full overflow-hidden rounded-lg bg-orange-50/50 dark:bg-orange-950/10 flex items-center justify-center mb-4 min-h-[140px] border border-orange-100 dark:border-orange-500/10">
           {wp.product.image ? (
            <img src={getFullImageUrl(wp.product.image)!} alt={wp.product.name} className="object-cover w-full h-full" />
           ) : (
@@ -746,16 +747,16 @@ export function RetailerDashboard() {
           )}
          </div>
          <div className="flex-1">
-          <h4 className="font-semibold text-slate-800 line-clamp-2 leading-tight text-sm mb-1">{wp.product.name}</h4>
-          <p className="text-xs text-slate-500 mb-3">{wp.product.brand} &bull; {wp.product.unit}</p>
-          <div className="mt-auto pt-3 flex flex-col border-t border-slate-200">
-           <p className="text-xs text-slate-500 line-through">MRP: ₹{wp.mrp}</p>
-           <p className="text-lg font-semibold text-slate-900">₹{wp.wholesale_price} <span className="text-xs font-normal text-slate-500">/ {wp.product.unit}</span></p>
+          <h4 className="font-semibold text-orange-950 dark:text-orange-100 line-clamp-2 leading-tight text-sm mb-1">{wp.product.name}</h4>
+          <p className="text-xs text-orange-700/60 dark:text-orange-350/60 mb-3">{wp.product.brand} &bull; {wp.product.unit}</p>
+          <div className="mt-auto pt-3 flex flex-col border-t border-orange-100 dark:border-orange-500/10">
+           <p className="text-xs text-orange-600/50 dark:text-orange-400/50 line-through">MRP: ₹{wp.mrp}</p>
+           <p className="text-lg font-bold text-orange-950 dark:text-orange-100">₹{wp.wholesale_price} <span className="text-xs font-normal text-slate-500">/ {wp.product.unit}</span></p>
           </div>
          </div>
 
          <div className="mt-4 space-y-3">
-          <div className="flex items-center justify-between bg-slate-50 dark:bg-slate-850 p-1 rounded border border-slate-200">
+          <div className="flex items-center justify-between bg-orange-50 dark:bg-orange-950/30 p-1 rounded border border-orange-200 dark:border-orange-500/20 shadow-inset-tactile">
            <button 
             onClick={() => setQuantities(q => ({ ...q, [wp.id]: Math.max(wp.min_order_qty, (q[wp.id] || wp.min_order_qty) - 1) }))}
             className="w-8 h-8 rounded flex items-center justify-center hover:bg-slate-200 hover:bg-slate-200 transition-all text-slate-500"
@@ -763,7 +764,7 @@ export function RetailerDashboard() {
            >
             <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M20 12H4"></path></svg>
            </button>
-           <span className="text-sm font-semibold text-slate-700">{quantities[wp.id] || wp.min_order_qty}</span>
+           <span className="text-sm font-semibold text-orange-850 dark:text-orange-200">{quantities[wp.id] || wp.min_order_qty}</span>
            <button 
             onClick={() => setQuantities(q => ({ ...q, [wp.id]: Math.min(wp.available_stock, (q[wp.id] || wp.min_order_qty) + 1) }))}
             className="w-8 h-8 rounded flex items-center justify-center hover:bg-slate-200 hover:bg-slate-200 transition-all text-slate-500"
@@ -776,11 +777,11 @@ export function RetailerDashboard() {
           <button
            disabled={addingToCart === wp.id || wp.available_stock < wp.min_order_qty}
            onClick={() => handleAddToCart(wp.id)}
-           className="w-full btn-primary py-2 text-xs font-semibold"
+           className="w-full btn-tactile-orange py-2 text-xs font-semibold shadow-tactile-primary"
           >
            {addingToCart === wp.id ? 'Adding...' : 'Add to Cargo'}
           </button>
-          <div className="flex justify-between items-center text-xs text-slate-500 mt-2 px-1">
+          <div className="flex justify-between items-center text-xs text-orange-600/80 dark:text-orange-400/80 mt-2 px-1">
             <span>Min: {wp.min_order_qty}</span>
             <span className={wp.available_stock < wp.min_order_qty * 2 ? 'text-red-500 font-semibold' : ''}>Stock: {wp.available_stock}</span>
           </div>
@@ -793,7 +794,7 @@ export function RetailerDashboard() {
    )}
 
    {activeTab === 'cart' && (
-    <div className="card bg-slate-100 border border-slate-200 overflow-hidden animate-fade-in">
+    <div className="card bg-orange-50/20 dark:bg-orange-950/5 border border-orange-200 dark:border-orange-500/20 overflow-hidden animate-fade-in shadow-sm shadow-tactile-primary">
      <div className="bg-slate-50 px-6 py-8 border-b border-slate-200">
       <h3 className="text-xl font-semibold text-slate-800">Shopping Cart</h3>
       <p className="text-xs text-slate-500 mt-1">Verify bulk requisitions before checkout.</p>
@@ -813,7 +814,7 @@ export function RetailerDashboard() {
         <p className="text-slate-500 mt-1 text-sm">Head back to the marketplace to add some products.</p>
         <button 
          onClick={() => setActiveTab('marketplace')}
-         className="mt-4 btn-primary text-xs font-semibold px-4 py-2"
+         className="mt-4 btn-tactile-orange text-xs font-semibold px-4 py-2 shadow-tactile-primary"
         >
          Browse Marketplace
         </button>
@@ -822,9 +823,9 @@ export function RetailerDashboard() {
        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-4">
          {cart.data.items.map((item) => (
-          <div key={item.id} className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 bg-slate-50/40 rounded border border-slate-200/80 transition-all">
+          <div key={item.id} className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 bg-white dark:bg-orange-950/10 rounded-xl border border-orange-200 dark:border-orange-500/20 shadow-sm">
            <div className="flex items-center space-x-4">
-            <div className="w-14 h-14 bg-slate-100 rounded flex-shrink-0 border border-slate-200 overflow-hidden flex items-center justify-center p-1">
+            <div className="w-14 h-14 bg-slate-100 rounded flex-shrink-0 border border-orange-100 dark:border-orange-500/10 overflow-hidden flex items-center justify-center p-1">
              {item.wholesaler_product.product.image ? (
               <img src={getFullImageUrl(item.wholesaler_product.product.image)!} className="object-contain w-full h-full" alt="" />
              ) : (
@@ -832,29 +833,29 @@ export function RetailerDashboard() {
              )}
             </div>
             <div className="min-w-0">
-             <h4 className="font-medium text-slate-800 truncate text-sm">{item.wholesaler_product.product.name}</h4>
-             <p className="text-xs text-slate-500">{item.wholesaler_product.product.brand}</p>
-             <p className="text-xs font-semibold text-primary-600 mt-1">₹{item.unit_price_snapshot} / {item.wholesaler_product.product.unit}</p>
+             <h4 className="font-medium text-orange-950 dark:text-orange-50 truncate text-sm">{item.wholesaler_product.product.name}</h4>
+             <p className="text-xs text-orange-700/60 dark:text-orange-350/60">{item.wholesaler_product.product.brand}</p>
+             <p className="text-xs font-semibold text-orange-600 dark:text-orange-400 mt-1">₹{item.unit_price_snapshot} / {item.wholesaler_product.product.unit}</p>
             </div>
            </div>
            <div className="flex items-center space-x-6 w-full sm:w-auto justify-between sm:justify-end">
-            <div className="flex items-center bg-slate-100 border border-slate-200 rounded p-1">
+            <div className="flex items-center bg-orange-50 dark:bg-orange-950/30 border border-orange-200 dark:border-orange-500/20 rounded p-1 shadow-sm shadow-inset-tactile">
              <button 
               onClick={() => handleUpdateCartQty(item.id, item.quantity - 1)}
-              className="w-7 h-7 flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-850 rounded text-slate-500"
+              className="w-7 h-7 flex items-center justify-center hover:bg-orange-100 dark:hover:bg-orange-900 rounded text-orange-500 active:scale-95"
              >
               <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M20 12H4"></path></svg>
              </button>
-             <span className="w-8 text-center text-sm font-medium text-slate-700">{item.quantity}</span>
+             <span className="w-8 text-center text-sm font-medium text-orange-850 dark:text-orange-200">{item.quantity}</span>
              <button 
               onClick={() => handleUpdateCartQty(item.id, item.quantity + 1)}
-              className="w-7 h-7 flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-850 rounded text-slate-500"
+              className="w-7 h-7 flex items-center justify-center hover:bg-orange-100 dark:hover:bg-orange-900 rounded text-orange-500 active:scale-95"
              >
               <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M12 4v16m8-8H4"></path></svg>
              </button>
             </div>
             <div className="text-right min-w-[100px]">
-             <p className="text-base font-semibold text-slate-800">₹{(item.quantity * item.unit_price_snapshot).toFixed(2)}</p>
+             <p className="text-base font-bold text-orange-950 dark:text-orange-100">₹{(item.quantity * item.unit_price_snapshot).toFixed(2)}</p>
              <button 
               onClick={() => handleUpdateCartQty(item.id, 0)}
               className="text-xs font-medium text-red-600 hover:text-red-500 transition-colors mt-1"
@@ -867,27 +868,27 @@ export function RetailerDashboard() {
          ))}
         </div>
 
-        <div className="bg-slate-50 p-6 rounded border border-slate-200 h-fit">
-         <h4 className="text-base font-semibold text-slate-800 mb-4 pb-2 border-b border-slate-200">
+        <div className="bg-orange-50/50 dark:bg-orange-950/20 p-6 rounded-xl border border-orange-200 dark:border-orange-500/20 h-fit shadow-sm shadow-tactile-primary">
+         <h4 className="text-base font-semibold text-orange-950 dark:text-orange-100 mb-4 pb-2 border-b border-orange-200 dark:border-orange-500/20">
           Order Summary
          </h4>
          <div className="space-y-4 mb-6">
-          <div className="flex justify-between text-xs font-medium text-slate-500">
+          <div className="flex justify-between text-xs font-semibold text-orange-700/80 dark:text-orange-350/80">
            <span>Subtotal</span>
-           <span className="text-slate-800 font-medium">₹{cartTotal.toFixed(2)}</span>
+           <span className="text-orange-950 dark:text-orange-100 font-bold">₹{cartTotal.toFixed(2)}</span>
           </div>
-          <div className="flex justify-between text-xs font-medium text-slate-500">
+          <div className="flex justify-between text-xs font-semibold text-orange-700/80 dark:text-orange-350/80">
            <span>Shipping</span>
            <span className="text-emerald-600 font-medium">Free / Optimized</span>
           </div>
-          <div className="pt-4 border-t border-slate-200 flex justify-between items-end">
+          <div className="pt-4 border-t border-orange-200 dark:border-orange-500/20 flex justify-between items-end">
            <span className="text-xs font-medium text-slate-500">Total</span>
-           <span className="text-xl font-bold text-primary-600">₹{cartTotal.toFixed(2)}</span>
+           <span className="text-xl font-bold text-orange-600 dark:text-orange-400">₹{cartTotal.toFixed(2)}</span>
           </div>
          </div>
          <button 
           onClick={handleCheckout}
-          className="w-full btn-primary py-2.5 text-xs font-semibold flex items-center justify-center gap-1.5"
+          className="w-full btn-tactile-orange py-2.5 text-xs font-semibold flex items-center justify-center gap-1.5 shadow-tactile-primary"
          >
           Proceed to Payment
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7-7 7"></path></svg>
@@ -904,20 +905,20 @@ export function RetailerDashboard() {
     <div className="animate-fade-in space-y-6">
      <div className="flex flex-wrap justify-between items-center mb-6 gap-4">
       <div className="flex items-center gap-3">
-       <div className="w-1 h-6 bg-primary-600 flex-shrink-0" />
+       <div className="w-1 h-6 bg-blue-600 flex-shrink-0" />
        <h3 className="text-xl font-semibold text-slate-800">Current Inventory</h3>
-       <span className="text-xs bg-slate-100 border border-slate-200 px-2 py-0.5 rounded text-slate-600 font-medium">{inventory.data.length} Items</span>
+       <span className="text-xs bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 px-2 py-0.5 rounded text-blue-600 dark:text-blue-400 font-semibold">{inventory.data.length} Items</span>
       </div>
       <button
        onClick={() => setShowAddInventory(true)}
-       className="btn-primary text-xs font-semibold px-4 py-2 flex items-center gap-2"
+       className="btn-tactile-blue text-xs font-semibold px-4 py-2 flex items-center gap-2 shadow-tactile-blue"
       >
        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"/></svg>
        Add Item
       </button>
      </div>
 
-     <div className="dash-section overflow-hidden">
+     <div className="dash-section border-blue-200 dark:border-blue-900/40 bg-blue-50/20 dark:bg-blue-950/5 shadow-sm shadow-tactile-blue overflow-hidden">
       <div className="overflow-x-auto">
        <table className="min-w-full premium-table">
         <thead>
@@ -941,7 +942,7 @@ export function RetailerDashboard() {
            </td>
           </tr>
          ) : inventory.data.filter(item => Number(item.current_stock) > 0).map((item) => (
-          <tr key={item.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-850/30 transition-all group">
+          <tr key={item.id} className="hover:bg-blue-100/50 dark:hover:bg-blue-950/30 transition-all group">
            <td className="px-6 py-4 whitespace-nowrap">
             <div className="flex items-center">
              <div className="h-10 w-10 flex-shrink-0 rounded bg-slate-100 p-1 border border-slate-200 flex items-center justify-center">
@@ -952,7 +953,7 @@ export function RetailerDashboard() {
               />
              </div>
              <div className="ml-3">
-              <div className="text-sm font-semibold text-slate-800 group-hover:text-primary-600 dark:group-hover:text-primary-500 transition-colors">{item.product.name}</div>
+              <div className="text-sm font-semibold text-blue-950 dark:text-blue-150 group-hover:text-blue-600 transition-colors">{item.product.name}</div>
               <div className="text-xs text-slate-500">{item.product.brand}</div>
              </div>
             </div>
@@ -961,7 +962,7 @@ export function RetailerDashboard() {
             <span className="badge badge-blue">{item.product.category?.name || 'GENERIC'}</span>
            </td>
            <td className="px-6 py-4 whitespace-nowrap">
-            <div className="text-sm font-semibold text-slate-800 dark:text-slate-255">{item.current_stock} <span className="text-xs text-slate-500 font-normal lowercase">{item.product.unit}</span></div>
+            <div className="text-sm font-bold text-blue-950 dark:text-blue-100">{item.current_stock} <span className="text-xs text-slate-500 font-normal lowercase">{item.product.unit}</span></div>
            </td>
            <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-600">
             {editingInventoryId === item.id ? (
@@ -999,7 +1000,7 @@ export function RetailerDashboard() {
                setEditingThresholdValue(item.reorder_level.toString());
               }}
              >
-              <span className="font-medium">{item.reorder_level} {item.product.unit}</span>
+              <span className="font-semibold text-blue-900 dark:text-blue-100">{item.reorder_level} {item.product.unit}</span>
               <svg className="w-3.5 h-3.5 opacity-0 group-hover/threshold:opacity-100 transition-opacity text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
              </div>
             )}
@@ -1024,44 +1025,44 @@ export function RetailerDashboard() {
     <div className="animate-fade-in space-y-6">
      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
       <div className="flex items-center gap-3">
-       <div className="w-1 h-6 bg-red-500 flex-shrink-0" />
+       <div className="w-1 h-6 bg-rose-500 flex-shrink-0" />
        <div>
         <h3 className="text-xl font-semibold text-slate-800">Credit Ledger</h3>
         <p className="text-xs text-slate-500 font-medium">Financial reconciliation and settlement tracking</p>
        </div>
       </div>
       <div className="flex items-center space-x-4">
-       <div className="card p-4 min-w-[200px]">
-        <span className="text-xs text-slate-500 font-medium block mb-1">Total Outstanding</span>
-        <span className="text-2xl font-bold text-red-500">₹{orders.data.reduce((acc, o) => acc + Math.max(0, Number(o.amount_due)), 0).toFixed(2)}</span>
+       <div className="card bg-rose-50 dark:bg-rose-950/20 border border-rose-250 dark:border-rose-500/20 p-4 min-w-[200px] shadow-sm shadow-tactile-rose">
+        <span className="text-xs text-rose-800 dark:text-rose-300 font-semibold block mb-1">Total Outstanding</span>
+        <span className="text-2xl font-bold text-rose-600 dark:text-rose-400">₹{orders.data.reduce((acc, o) => acc + Math.max(0, Number(o.amount_due)), 0).toFixed(2)}</span>
        </div>
       </div>
      </div>
 
      <div className="grid grid-cols-1 gap-4">
       {orders.data.filter(o => o.amount_due > 0).length === 0 ? (
-       <div className="card p-12 text-center bg-slate-100 border border-slate-200">
+       <div className="card p-12 text-center bg-emerald-50/50 dark:bg-emerald-950/10 border border-emerald-250 dark:border-emerald-500/20 shadow-sm shadow-tactile-emerald">
          <div className="w-12 h-12 bg-emerald-50 dark:bg-emerald-950/20 rounded-full flex items-center justify-center mx-auto mb-4 text-emerald-500">
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
          </div>
-         <h4 className="text-base font-semibold text-slate-800">Zero Liability</h4>
+         <h4 className="text-base font-bold text-orange-950 dark:text-orange-100">Zero Liability</h4>
          <p className="text-xs text-slate-500 mt-1">All credit lines are settled. Supply chain health is optimal.</p>
        </div>
       ) : (
        orders.data.filter(o => o.amount_due > 0).map(order => (
-        <div key={order.id} className="card p-6 hover:border-slate-300 dark:hover:border-slate-700 transition-all relative overflow-hidden">
-         <div className="absolute top-0 left-0 w-1 h-full bg-red-500"></div>
+        <div key={order.id} className="card bg-rose-50/40 dark:bg-rose-950/10 border border-rose-250 dark:border-rose-500/20 p-6 hover:border-rose-450 dark:hover:border-rose-500/50 transition-all relative overflow-hidden shadow-sm shadow-tactile-rose">
+         <div className="absolute top-0 left-0 w-1 h-full bg-rose-500"></div>
          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pl-2">
           <div className="flex items-center space-x-4">
-           <div className="w-12 h-12 bg-slate-100 rounded flex items-center justify-center text-slate-400 border border-slate-200">
+           <div className="w-12 h-12 bg-rose-100 dark:bg-rose-900/30 rounded flex items-center justify-center text-rose-500 border border-rose-200 dark:border-rose-500/20">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
            </div>
            <div>
             <div className="flex items-center space-x-3 mb-1">
-             <span className="text-base font-semibold text-slate-800">Order #{order.order_number}</span>
+             <span className="text-base font-bold text-orange-950 dark:text-orange-100">Order #{order.order_number}</span>
              <span className="badge badge-red text-xs">OUTSTANDING</span>
             </div>
-            <p className="text-xs text-slate-500">Due Date: <span className="text-red-500 font-medium">{order.due_date || 'Immediate'}</span></p>
+            <p className="text-xs text-rose-700/80 dark:text-rose-300/80">Due Date: <span className="text-rose-600 dark:text-rose-400 font-semibold">{order.due_date || 'Immediate'}</span></p>
            </div>
           </div>
 
@@ -1095,7 +1096,7 @@ export function RetailerDashboard() {
               alert(e.message);
              }
             }}
-            className="btn-primary text-xs font-semibold px-4 py-2 flex items-center group"
+            className="btn-tactile-emerald text-xs font-semibold px-4 py-2 flex items-center group shadow-tactile-emerald"
            >
             Settle Line
             <svg className="w-3.5 h-3.5 ml-2 group-hover:rotate-12 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
@@ -1115,13 +1116,13 @@ export function RetailerDashboard() {
       <div className="tab-bar">
        <button 
         onClick={() => navigate('/sales/record')}
-        className={`tab-pill ${salesSubTab === 'record' ? 'active' : ''}`}
+        className={`tab-pill ${salesSubTab === 'record' ? 'bg-emerald-500 text-white shadow-tactile-emerald font-semibold' : 'bg-slate-100 hover:bg-slate-200 text-slate-650'}`}
        >
         Record Sale
        </button>
        <button 
         onClick={() => navigate('/sales/history')}
-        className={`tab-pill ${salesSubTab === 'history' ? 'active' : ''}`}
+        className={`tab-pill ${salesSubTab === 'history' ? 'bg-emerald-500 text-white shadow-tactile-emerald font-semibold' : 'bg-slate-100 hover:bg-slate-200 text-slate-650'}`}
        >
         Sales History
        </button>
@@ -1130,7 +1131,7 @@ export function RetailerDashboard() {
        <button 
         onClick={handleRecordSale}
         disabled={isRecordingSale}
-        className="btn-primary text-xs font-semibold px-4 py-2 flex items-center disabled:opacity-50"
+        className="btn-tactile-emerald text-xs font-semibold px-4 py-2 flex items-center disabled:opacity-50 shadow-tactile-emerald"
        >
         {isRecordingSale ? 'Processing...' : 'Generate Bill'}
         <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
@@ -1140,11 +1141,11 @@ export function RetailerDashboard() {
 
      {salesSubTab === 'record' ? (
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-       <div className="dash-section p-6">
-        <h4 className="text-base font-semibold text-slate-800 mb-4">Item Entry</h4>
+       <div className="dash-section p-6 border-emerald-200 dark:border-emerald-500/20 bg-emerald-50/50 dark:bg-emerald-950/10 shadow-sm shadow-tactile-emerald">
+        <h4 className="text-base font-semibold text-emerald-900 dark:text-emerald-100 mb-4">Item Entry</h4>
         <div className="space-y-4">
          <div>
-          <label className="block text-xs font-medium text-slate-500 mb-1.5">Select Product</label>
+          <label className="block text-xs font-semibold text-emerald-800/80 dark:text-emerald-300/80 mb-1.5">Select Product</label>
           <select 
            className="input-field"
            id="sale-product-select"
@@ -1158,19 +1159,19 @@ export function RetailerDashboard() {
          </div>
          <div className="grid grid-cols-2 gap-4">
           <div>
-           <label className="block text-xs font-medium text-slate-500 mb-1.5">Quantity Sold</label>
+           <label className="block text-xs font-semibold text-emerald-800/80 dark:text-emerald-300/80 mb-1.5">Quantity Sold</label>
            <input 
             type="number"
-            className="input-field"
+            className="input-field shadow-inset-tactile focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
             placeholder="Qty..."
             id="sale-qty-input"
            />
           </div>
           <div>
-           <label className="block text-xs font-medium text-slate-500 mb-1.5">Unit Price (₹)</label>
+           <label className="block text-xs font-semibold text-emerald-800/80 dark:text-emerald-300/80 mb-1.5">Unit Price (₹)</label>
            <input 
             type="number"
-            className="input-field"
+            className="input-field shadow-inset-tactile focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
             placeholder="Price..."
             id="sale-price-input"
            />
@@ -1190,31 +1191,31 @@ export function RetailerDashboard() {
             prInput.value = '';
            }
           }}
-          className="btn-primary w-full py-2.5 text-xs font-semibold"
+          className="btn-tactile-emerald w-full py-2.5 text-xs font-semibold shadow-tactile-emerald"
          >
           Add to Bill
          </button>
         </div>
        </div>
 
-       <div className="dash-section p-6 relative">
+       <div className="dash-section p-6 border-orange-200 dark:border-orange-500/20 bg-orange-50/20 dark:bg-orange-950/5 shadow-sm shadow-tactile-primary relative">
         <h4 className="text-base font-semibold text-slate-800 mb-4 flex items-center">
          Bill Preview
-         <span className="ml-2.5 px-2 py-0.5 bg-primary-100 dark:bg-primary-900/40 rounded text-xs font-semibold text-primary-700 dark:text-primary-400">{saleItems.length} Items</span>
+         <span className="ml-2.5 px-2 py-0.5 bg-emerald-100 dark:bg-emerald-900/40 rounded text-xs font-semibold text-emerald-700 dark:text-emerald-400">{saleItems.length} Items</span>
         </h4>
         <div className="space-y-3 max-h-[320px] overflow-y-auto pr-1 custom-scrollbar">
          {saleItems.length === 0 ? (
           <div className="py-12 text-center">
-           <p className="text-slate-400 text-xs font-medium italic">No items added to current session</p>
+           <p className="text-emerald-600/70 dark:text-emerald-400/70 text-xs font-medium italic">No items added to current session</p>
           </div>
          ) : (
           saleItems.map((si, idx) => {
            const p = inventory.data.find(inv => inv.product.id === si.product)?.product;
            return (
-            <div key={idx} className="flex justify-between items-center bg-slate-100/50 p-3 rounded border border-slate-200">
+            <div key={idx} className="flex justify-between items-center bg-white dark:bg-[#0c0c0e] p-3 rounded-xl border border-emerald-200 dark:border-emerald-500/20 shadow-sm">
              <div>
-              <div className="text-sm font-semibold text-slate-800">{p?.name || 'Unknown Product'}</div>
-              <div className="text-xs text-slate-500 mt-0.5">QTY: {si.quantity_sold} × ₹{si.unit_price} </div>
+              <div className="text-sm font-semibold text-emerald-950 dark:text-emerald-50">{p?.name || 'Unknown Product'}</div>
+              <div className="text-xs text-emerald-700/60 dark:text-emerald-300/60 mt-0.5">QTY: {si.quantity_sold} × ₹{si.unit_price} </div>
              </div>
              <div className="flex items-center space-x-3">
               <div className="text-sm font-semibold text-primary-600 dark:text-primary-500">₹{(si.quantity_sold * si.unit_price).toFixed(2)}</div>
@@ -1233,7 +1234,7 @@ export function RetailerDashboard() {
        </div>
       </div>
      ) : (
-      <div className="dash-section overflow-hidden">
+      <div className="dash-section border-blue-200 dark:border-blue-900/40 bg-blue-50/20 dark:bg-blue-950/5 shadow-sm shadow-tactile-blue overflow-hidden">
        <div className="overflow-x-auto">
         <table className="min-w-full premium-table">
          <thead>
@@ -1253,10 +1254,10 @@ export function RetailerDashboard() {
            <tr><td colSpan={6} className="px-4 py-12 text-center text-sm text-slate-500 italic">No sales transactions recorded yet</td></tr>
           ) : (
            sales.data.map(sale => (
-            <tr key={sale.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-850/30 transition-colors">
-             <td className="px-4 py-3 whitespace-nowrap text-sm font-semibold text-slate-800">#{sale.id}</td>
+            <tr key={sale.id} className="hover:bg-emerald-100/50 dark:hover:bg-emerald-950/30 transition-colors">
+             <td className="px-4 py-3 whitespace-nowrap text-sm font-semibold text-emerald-950 dark:text-emerald-50">#{sale.id}</td>
              <td className="px-4 py-3 whitespace-nowrap text-sm text-slate-500">{new Date(sale.sale_date).toLocaleDateString()}</td>
-             <td className="px-4 py-3 whitespace-nowrap text-sm text-slate-800">{sale.total_items} units</td>
+             <td className="px-4 py-3 whitespace-nowrap text-sm text-emerald-900 dark:text-emerald-100">{sale.total_items} units</td>
              <td className="px-4 py-3 whitespace-nowrap text-sm font-semibold text-emerald-600 dark:text-emerald-500">₹{sale.total_amount}</td>
              <td className="px-4 py-3 whitespace-nowrap">
               <span className="badge badge-blue">{sale.invoice_number}</span>
@@ -1264,7 +1265,7 @@ export function RetailerDashboard() {
              <td className="px-4 py-3 whitespace-nowrap text-right text-sm">
               <button 
                onClick={() => setShowInvoice(sale)}
-               className="text-xs font-semibold text-primary-600 hover:text-primary-500 transition-colors"
+               className="text-xs font-semibold text-emerald-600 hover:text-emerald-500 transition-colors"
               >
                View Invoice
               </button>
@@ -1285,17 +1286,17 @@ export function RetailerDashboard() {
     <div className="fixed inset-0 z-[100] overflow-y-auto bg-slate-900/60 backdrop-blur-sm animate-fade-in">
      <div className="flex min-h-full items-center justify-center p-4 sm:p-6" onClick={() => setShowAddInventory(false)}>
       <div 
-       className="bg-slate-100 rounded-lg border border-slate-200 shadow-xl max-w-lg w-full p-6 animate-scale-in relative h-auto overflow-hidden"
+       className="bg-white dark:bg-[#0a0a0a] rounded-2xl shadow-xl border border-blue-200 dark:border-blue-500/20 max-w-lg w-full p-6 animate-scale-in relative h-auto overflow-hidden shadow-tactile-blue"
        onClick={(e) => e.stopPropagation()}
       >
        <div className="flex justify-between items-start mb-6">
         <div>
-         <h3 className="text-lg font-semibold text-slate-800">Asset Registration</h3>
-         <p className="text-xs text-slate-500 mt-1">Manually log physical inventory for AI synchronization and supply chain tracking.</p>
+         <h3 className="text-lg font-semibold text-blue-950 dark:text-blue-100">Asset Registration</h3>
+         <p className="text-xs text-blue-700/70 dark:text-blue-300/70 mt-1">Manually log physical inventory for AI synchronization and supply chain tracking.</p>
         </div>
         <button
          onClick={() => setShowAddInventory(false)}
-         className="p-1.5 text-slate-400 hover:text-slate-650 hover:bg-slate-200/50 rounded transition-colors"
+         className="p-1.5 text-blue-500 hover:text-blue-750 hover:bg-blue-100 dark:hover:bg-blue-950/30 rounded transition-colors"
         >
          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
         </button>
@@ -1304,9 +1305,9 @@ export function RetailerDashboard() {
        <div className="grid grid-cols-1 gap-4">
         {/* Product Selection */}
         <div>
-         <label className="block text-xs font-medium text-slate-500 mb-1.5">Select Asset Reference</label>
+         <label className="block text-xs font-semibold text-blue-800/80 dark:text-blue-300/80 mb-1.5">Select Asset Reference</label>
          <select 
-          className="input-field"
+          className="input-field shadow-inset-tactile focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
           value={newInventoryItem.productId}
           onChange={(e) => setNewInventoryItem({ ...newInventoryItem, productId: parseInt(e.target.value) })}
          >
@@ -1315,13 +1316,13 @@ export function RetailerDashboard() {
            <option key={p.id} value={p.id}>{p.name} ({p.brand})</option>
           ))}
          </select>
-         <p className="mt-1.5 text-xs text-slate-400">Reference the exact product name and brand for accurate AI trend prediction.</p>
+         <p className="mt-1.5 text-xs text-blue-600/70 dark:text-blue-400/70">Reference the exact product name and brand for accurate AI trend prediction.</p>
         </div>
 
         {/* Quantities */}
         <div className="grid grid-cols-2 gap-4">
          <div>
-          <label className="block text-xs font-medium text-slate-500 mb-1.5">Stock Volume</label>
+          <label className="block text-xs font-semibold text-blue-800/80 dark:text-blue-300/80 mb-1.5">Stock Volume</label>
           <div className="relative">
            <input 
             type="number"
@@ -1329,11 +1330,11 @@ export function RetailerDashboard() {
             value={newInventoryItem.currentStock}
             onChange={(e) => setNewInventoryItem({ ...newInventoryItem, currentStock: parseInt(e.target.value) })}
            />
-           <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium text-slate-400">Units</span>
+           <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold text-blue-400/80">Units</span>
           </div>
          </div>
          <div>
-          <label className="block text-xs font-medium text-slate-500 mb-1.5">Supply Floor</label>
+          <label className="block text-xs font-semibold text-blue-800/80 dark:text-blue-300/80 mb-1.5">Supply Floor</label>
           <div className="relative">
            <input 
             type="number"
@@ -1341,14 +1342,14 @@ export function RetailerDashboard() {
             value={newInventoryItem.reorderLevel}
             onChange={(e) => setNewInventoryItem({ ...newInventoryItem, reorderLevel: parseInt(e.target.value) })}
            />
-           <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium text-slate-400">Min</span>
+           <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold text-blue-400/80">Min</span>
           </div>
          </div>
-         <p className="col-span-2 text-xs text-slate-400">Supply floor sets the threshold for critical low-stock intelligence triggers.</p>
+         <p className="col-span-2 text-xs text-blue-600/70 dark:text-blue-400/70">Supply floor sets the threshold for critical low-stock intelligence triggers.</p>
         </div>
 
         {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row justify-end gap-3 pt-4 border-t border-slate-200 mt-2">
+        <div className="flex flex-col sm:flex-row justify-end gap-3 pt-4 border-t border-blue-200 dark:border-blue-500/20 mt-2">
          <button 
           onClick={() => setShowAddInventory(false)}
           className="btn-secondary text-xs font-semibold px-4 py-2"
@@ -1358,7 +1359,7 @@ export function RetailerDashboard() {
          <button 
           disabled={addingItem || newInventoryItem.productId === 0}
           onClick={() => handleAddInventoryItem(newInventoryItem.productId, newInventoryItem.currentStock, newInventoryItem.reorderLevel)}
-          className="btn-primary text-xs font-semibold px-4 py-2 flex items-center justify-center gap-2 disabled:opacity-50"
+          className="btn-tactile-blue text-xs font-semibold px-4 py-2 flex items-center justify-center gap-2 shadow-tactile-blue"
          >
           {addingItem ? 'Processing...' : 'Confirm Update'}
          </button>
@@ -1373,24 +1374,24 @@ export function RetailerDashboard() {
    {showInvoice && (
     <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-in" onClick={() => setShowInvoice(null)}>
      <div 
-      className="rounded-lg shadow-xl max-w-md w-full animate-scale-in overflow-y-auto bg-slate-100 border border-slate-200 p-6"
+      className="rounded-2xl shadow-xl max-w-md w-full animate-scale-in overflow-y-auto bg-white dark:bg-[#0a0a0a] border border-emerald-200 dark:border-emerald-500/20 p-6 shadow-tactile-emerald"
       style={{maxHeight: '90vh'}}
       onClick={(e) => e.stopPropagation()}
      >
       {/* Header */}
       <div className="flex justify-between items-start mb-6">
        <div>
-        <h3 className="text-lg font-semibold text-slate-800">Tax Invoice</h3>
-        <p className="text-xs text-slate-500 mt-0.5">{showInvoice.invoice_number}</p>
+        <h3 className="text-lg font-semibold text-emerald-950 dark:text-emerald-50">Tax Invoice</h3>
+        <p className="text-xs text-emerald-700/70 dark:text-emerald-300/70 mt-0.5">{showInvoice.invoice_number}</p>
        </div>
        <div className="flex items-center space-x-3">
         <div className="text-right">
-         <div className="text-xs text-slate-400">Date</div>
-         <div className="text-sm font-semibold text-slate-800">{new Date(showInvoice.sale_date).toLocaleDateString()}</div>
+         <div className="text-xs text-emerald-600/70 dark:text-emerald-300/70">Date</div>
+         <div className="text-sm font-semibold text-emerald-950 dark:text-emerald-100">{new Date(showInvoice.sale_date).toLocaleDateString()}</div>
         </div>
         <button 
          onClick={() => setShowInvoice(null)}
-         className="p-1 text-slate-400 hover:text-slate-600 hover:bg-slate-200/50 rounded transition-colors"
+         className="p-1 text-emerald-500 hover:text-emerald-750 hover:bg-emerald-100 dark:hover:bg-emerald-950/30 rounded transition-colors"
         >
          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
         </button>
@@ -1400,26 +1401,26 @@ export function RetailerDashboard() {
       <div className="space-y-4">
        {/* Items */}
        <div>
-        <div className="text-xs font-semibold text-slate-500 mb-2">Sold Items</div>
+        <div className="text-xs font-semibold text-emerald-700 dark:text-emerald-300 mb-2">Sold Items</div>
         <div className="space-y-2.5 max-h-[200px] overflow-y-auto pr-1 custom-scrollbar">
          {showInvoice.items.map((item, idx) => (
-          <div key={idx} className="flex justify-between items-center py-2.5 px-3 rounded border border-slate-200 bg-slate-200/50">
+          <div key={idx} className="flex justify-between items-center py-2.5 px-3 rounded-xl border border-emerald-250 dark:border-emerald-500/20 bg-emerald-50/50 dark:bg-emerald-950/20 shadow-sm">
            <div>
-            <span className="text-sm font-semibold text-slate-800 block">{item.product_name}</span>
-            <span className="text-xs text-slate-500">{item.quantity_sold} × ₹{item.unit_price}</span>
+            <span className="text-sm font-semibold text-emerald-950 dark:text-emerald-50 block">{item.product_name}</span>
+            <span className="text-xs text-emerald-600/75 dark:text-emerald-300/75">{item.quantity_sold} × ₹{item.unit_price}</span>
            </div>
-           <span className="text-sm font-semibold text-slate-900">₹{item.line_total}</span>
+           <span className="text-sm font-bold text-emerald-600 dark:text-emerald-450">₹{item.line_total}</span>
           </div>
          ))}
         </div>
        </div>
 
        {/* Total */}
-       <div className="p-3.5 rounded border border-slate-200 bg-slate-200/50 flex justify-between items-center text-sm">
-        <span className="text-xs text-slate-500 font-medium">Total Quantity</span>
-        <span className="font-semibold text-slate-800">{showInvoice.total_items} units</span>
+       <div className="p-3.5 rounded-xl border border-emerald-250 dark:border-emerald-500/20 bg-emerald-50/50 dark:bg-emerald-950/20 flex justify-between items-center text-sm shadow-sm">
+        <span className="text-xs text-emerald-700/80 dark:text-emerald-300/80 font-medium">Total Quantity</span>
+        <span className="font-semibold text-emerald-950 dark:text-emerald-100">{showInvoice.total_items} units</span>
        </div>
-       <div className="p-3.5 rounded border border-emerald-200 dark:border-emerald-800/80 bg-emerald-50 dark:bg-emerald-950/20 flex justify-between items-center">
+       <div className="p-3.5 rounded-xl border border-emerald-300 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/30 flex justify-between items-center shadow-sm shadow-tactile-emerald">
         <span className="text-xs text-emerald-600 dark:text-emerald-500 font-semibold">Grand Total</span>
         <span className="text-2xl font-bold text-emerald-600 dark:text-emerald-500">₹{showInvoice.total_amount}</span>
        </div>

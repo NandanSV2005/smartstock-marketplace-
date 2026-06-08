@@ -95,15 +95,15 @@ function AppShell({ children }: { children: ReactElement }) {
             {/* Theme Toggle Button */}
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-lg bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-500 hover:text-slate-800   transition-all cursor-pointer flex items-center justify-center"
+              className="p-2 rounded-lg bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-500 hover:text-slate-800 transition-all cursor-pointer flex items-center justify-center active:scale-[0.98] shadow-sm"
               aria-label="Toggle theme"
             >
               {theme === 'light' ? (
-                <svg className="w-4 h-4 text-primary-500" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-4 h-4 text-orange-500" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
                 </svg>
               ) : (
-                <svg className="w-4 h-4 text-primary-500" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-4 h-4 text-orange-500" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.46 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clipRule="evenodd" />
                 </svg>
               )}
@@ -111,16 +111,16 @@ function AppShell({ children }: { children: ReactElement }) {
 
             {user ? (
               <>
-                <div className="hidden sm:flex items-center bg-slate-100 border border-slate-200 rounded-lg px-3 py-1.5 transition-colors">
-                  <span className="w-1.5 h-1.5 bg-secondary-500 rounded-full mr-2 animate-pulse"></span>
-                  <span className="text-xs text-slate-600 font-medium">
+                <div className="hidden sm:flex items-center bg-slate-100 border border-slate-200 rounded-lg px-3 py-1.5 transition-colors shadow-[inset_0_1px_2px_rgba(0,0,0,0.05)]">
+                  <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full mr-2 animate-pulse"></span>
+                  <span className="text-xs text-slate-650 font-medium">
                     {user.role} &bull; {user.email}
                   </span>
                 </div>
                 {isLandingPage && (
                   <button
                     onClick={() => navigate(dashboardPath)}
-                    className="btn-primary py-1.5 px-3 text-xs font-semibold"
+                    className="btn-tactile-orange py-1.5 px-3 text-xs font-semibold shadow-tactile-primary"
                   >
                     Portal
                   </button>
@@ -128,7 +128,7 @@ function AppShell({ children }: { children: ReactElement }) {
                 <button 
                   type="button"
                   onClick={handleLogout}
-                  className="btn-secondary py-1.5 px-3 text-xs font-semibold border-error-500/20 text-error-500 hover:bg-error-500/10 hover:text-error-600 rounded-lg transition-all"
+                  className="btn-secondary py-1.5 px-3 text-xs font-semibold border-rose-500/20 text-rose-500 hover:bg-rose-500/10 hover:text-rose-600 rounded-lg transition-all active:scale-[0.98] shadow-sm"
                 >
                   Logout
                 </button>
@@ -136,7 +136,7 @@ function AppShell({ children }: { children: ReactElement }) {
             ) : (
               <button 
                 onClick={() => navigate('/login')}
-                className="btn-primary py-1.5 px-3 text-xs font-semibold"
+                className="btn-tactile-orange py-1.5 px-3 text-xs font-semibold shadow-tactile-primary"
               >
                 Sign In
               </button>
