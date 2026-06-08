@@ -38,14 +38,18 @@ function AppShell({ children }: { children: ReactElement }) {
 
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     const saved = localStorage.getItem('theme');
-    return (saved as 'light' | 'dark') || 'dark'; // Dark theme default
+    if (saved) return saved as 'light' | 'dark';
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    return prefersDark ? 'dark' : 'light';
   });
 
   useEffect(() => {
     if (theme === 'light') {
       document.documentElement.classList.add('light');
+      document.documentElement.classList.remove('dark');
       document.documentElement.setAttribute('data-theme', 'light');
     } else {
+      document.documentElement.classList.add('dark');
       document.documentElement.classList.remove('light');
       document.documentElement.setAttribute('data-theme', 'dark');
     }
@@ -73,7 +77,7 @@ function AppShell({ children }: { children: ReactElement }) {
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans overflow-x-clip transition-colors duration-300">
-      <header className="glass sticky top-0 z-50 transition-all backdrop-blur-xl">
+      <header className="backdrop-blur-xl bg-white/70 dark:bg-black/60 border-b border-black/5 dark:border-white/10 sticky top-0 z-50 transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
           <div className="flex items-center space-x-3 cursor-pointer" onClick={() => navigate('/')}>
             <div className="bg-primary-500/10 p-1.5 rounded-lg border border-primary-500/20 flex items-center justify-center">
@@ -82,7 +86,7 @@ function AppShell({ children }: { children: ReactElement }) {
               </svg>
             </div>
             <div>
-              <h1 className="text-base font-semibold text-slate-800 dark:text-slate-100 tracking-tight leading-none">SmartStock</h1>
+              <h1 className="text-base font-semibold text-slate-800 tracking-tight leading-none">SmartStock</h1>
               <span className="text-[11px] text-primary-500 font-semibold tracking-wider uppercase">Solutions AI</span>
             </div>
           </div>
@@ -91,7 +95,7 @@ function AppShell({ children }: { children: ReactElement }) {
             {/* Theme Toggle Button */}
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-lg bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 transition-all cursor-pointer flex items-center justify-center"
+              className="p-2 rounded-lg bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-500 hover:text-slate-800   transition-all cursor-pointer flex items-center justify-center"
               aria-label="Toggle theme"
             >
               {theme === 'light' ? (
@@ -109,7 +113,7 @@ function AppShell({ children }: { children: ReactElement }) {
               <>
                 <div className="hidden sm:flex items-center bg-slate-100 border border-slate-200 rounded-lg px-3 py-1.5 transition-colors">
                   <span className="w-1.5 h-1.5 bg-secondary-500 rounded-full mr-2 animate-pulse"></span>
-                  <span className="text-xs text-slate-600 dark:text-slate-400 font-medium">
+                  <span className="text-xs text-slate-600 font-medium">
                     {user.role} &bull; {user.email}
                   </span>
                 </div>

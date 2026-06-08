@@ -102,14 +102,14 @@ export default function AddProductDialog({ isOpen, onClose, onSuccess }: AddProd
       >
         <div className="flex justify-between items-start mb-6">
           <div>
-            <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-1 tracking-tight">
+            <h3 className="text-xl font-semibold text-slate-900 mb-1 tracking-tight">
               Add New Product
             </h3>
-            <p className="text-sm text-slate-500 dark:text-slate-400">Initialize a new product record in the marketplace directory.</p>
+            <p className="text-sm text-slate-500">Initialize a new product record in the marketplace directory.</p>
           </div>
           <button 
             onClick={onClose}
-            className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
+            className="p-1.5 rounded-lg hover:bg-slate-200/50 text-slate-400 hover:text-slate-800 transition-colors"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
           </button>
@@ -208,14 +208,14 @@ export default function AddProductDialog({ isOpen, onClose, onSuccess }: AddProd
                   <div className="p-3 bg-primary-50 dark:bg-primary-950/20 text-primary-600 rounded-full mb-3 inline-block">
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                   </div>
-                  <p className="text-xs font-medium text-slate-700 dark:text-slate-300">Upload Image</p>
+                  <p className="text-xs font-medium text-slate-700">Upload Image</p>
                   <p className="text-[11px] text-slate-400 mt-1">PNG, JPG up to 5MB</p>
                 </div>
 
                 {imageFile && (
-                  <div className="absolute inset-1.5 bg-slate-50 dark:bg-slate-900 rounded flex flex-col items-center justify-center p-4 border border-slate-200 dark:border-slate-800 animate-scale-in">
+                  <div className="absolute inset-1.5 bg-slate-100 rounded flex flex-col items-center justify-center p-4 border border-slate-200 animate-scale-in">
                     <svg className="w-8 h-8 text-secondary-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    <p className="text-xs font-medium text-slate-700 dark:text-slate-300 truncate w-full text-center px-4">{imageFile.name}</p>
+                    <p className="text-xs font-medium text-slate-700 truncate w-full text-center px-4">{imageFile.name}</p>
                     <button type="button" onClick={(e) => { e.stopPropagation(); setImageFile(null); }} className="mt-3 text-xs font-medium text-red-500 hover:text-red-400 transition-colors">Discard</button>
                   </div>
                 )}
