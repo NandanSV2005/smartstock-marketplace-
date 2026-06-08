@@ -162,35 +162,40 @@ export function WholesalerDashboard() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fade-in">
-      <div className="mb-10 border-b border-white/5 pb-6 flex flex-col md:flex-row md:items-end justify-between gap-6">
+      <div className="mb-10 pb-6 border-b border-white/5 flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
-          <h2 className="text-3xl font-black leading-7 text-slate-800 sm:text-4xl sm:truncate uppercase tracking-tighter">
-            Wholesale Control Center
-          </h2>
-          <p className="mt-2 text-sm text-slate-400 font-medium italic">
+          <div className="flex items-center gap-3 mb-1.5">
+            <div className="w-1.5 h-9 rounded-full bg-gradient-to-b from-orange-400 to-orange-700 shadow-md shadow-orange-500/40 flex-shrink-0" />
+            <h2 className="text-3xl font-black text-slate-800 sm:text-4xl uppercase tracking-tighter">
+              Wholesale Control Center
+            </h2>
+          </div>
+          <p className="text-sm text-slate-400 font-medium ml-5">
             Manage your products, track orders, and monitor retailer credit here.
           </p>
         </div>
         
-        <div className="flex bg-slate-100 p-1.5 rounded-2xl shadow-inner">
+        <div className="flex gap-1.5 bg-slate-100 p-1.5 rounded-2xl shadow-inner">
           <button 
             onClick={() => setActiveTab('terminal')}
-            className={`px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'terminal' ? 'bg-white text-primary-600 shadow-lg' : 'text-slate-500 hover:text-slate-800'}`}
+            className={`tab-pill${activeTab === 'terminal' ? ' active' : ''}`}
           >
-            Order Management
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+            Orders
           </button>
           <button 
             onClick={() => setActiveTab('ledger')}
-            className={`px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'ledger' ? 'bg-white text-primary-600 shadow-lg' : 'text-slate-500 hover:text-slate-800'}`}
+            className={`tab-pill${activeTab === 'ledger' ? ' active' : ''}`}
           >
-            Payments Tracker
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+            Payments
           </button>
           <button
             onClick={() => setActiveTab('credit')}
-            className={`px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === 'credit' ? 'bg-white text-primary-600 shadow-lg' : 'text-slate-500 hover:text-slate-800'}`}
+            className={`tab-pill${activeTab === 'credit' ? ' active' : ''}`}
           >
-            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
-            Retailer Credit
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
+            Credit Intel
           </button>
         </div>
       </div>
@@ -207,12 +212,14 @@ export function WholesalerDashboard() {
           {/* Action Center - Orders */}
           <div className="lg:col-span-2 space-y-6">
 
-            <section className="card p-10 bg-slate-100 border-none shadow-2xl relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-primary-600/5 rounded-full blur-3xl -mr-32 -mt-32"></div>
-              <h3 className="text-base font-black text-slate-800 mb-8 flex items-center uppercase tracking-widest relative z-10">
-                <span className="bg-primary-600 text-white w-8 h-8 rounded-xl flex justify-center items-center text-xs mr-4 font-black shadow-lg shadow-primary-500/20">{pendingOrders.length}</span>
-                New Orders List
-              </h3>
+            <section className="dash-section p-8 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-48 h-48 bg-orange-500/4 rounded-full blur-3xl -mr-24 -mt-24 pointer-events-none" />
+                <div className="flex items-center gap-3 mb-6 relative z-10">
+                  <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-orange-500/15 border border-orange-500/25 shadow-inner">
+                    <span className="text-sm font-black text-orange-400">{pendingOrders.length}</span>
+                  </div>
+                  <h3 className="text-sm font-black text-slate-700 uppercase tracking-widest">New Orders</h3>
+                </div>
               {pendingOrders.length === 0 ? (
                 <p className="text-sm text-slate-500 py-12 text-center glass rounded-2xl border-none font-medium italic">No new orders at the moment.</p>
               ) : (
@@ -255,11 +262,13 @@ export function WholesalerDashboard() {
               )}
             </section>
 
-            <section className="card p-10 border-t-2 border-secondary-500/50 shadow-2xl">
-              <h3 className="text-base font-black text-slate-800 mb-8 border-b border-white/5 pb-4 flex items-center uppercase tracking-widest">
-                <svg className="w-5 h-5 mr-4 text-secondary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                Ongoing Deliveries
-              </h3>
+            <section className="dash-section p-8">
+              <div className="flex items-center gap-3 mb-6 pb-4 border-b border-white/6">
+                <div className="w-8 h-8 rounded-lg bg-emerald-500/15 border border-emerald-500/25 flex items-center justify-center flex-shrink-0">
+                  <svg className="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+                <h3 className="text-sm font-black text-slate-700 uppercase tracking-widest">Ongoing Deliveries</h3>
+              </div>
               {activeOrders.length === 0 ? (
                 <p className="text-sm text-slate-500 py-12 text-center font-medium italic">No active deliveries in progress.</p>
               ) : (
@@ -315,11 +324,16 @@ export function WholesalerDashboard() {
           </div>
 
           <div className="lg:col-span-1">
-            <section className="card p-10 flex flex-col h-full bg-slate-100 border-none shadow-2xl relative overflow-hidden">
-              <div className="absolute -bottom-12 -left-12 w-48 h-48 bg-primary-600/5 rounded-full blur-3xl"></div>
-              <div className="flex justify-between items-center mb-10 border-b border-white/5 pb-6 relative z-10">
-                <h3 className="text-base font-black text-slate-800 uppercase tracking-widest">Your Product List</h3>
-                <span className="text-[10px] font-black bg-primary-600 px-4 py-1.5 rounded-full text-white uppercase tracking-widest shadow-lg shadow-primary-500/20">{products.length} Items</span>
+            <section className="dash-section p-8 flex flex-col h-full relative overflow-hidden">
+              <div className="absolute -bottom-12 -left-12 w-48 h-48 bg-orange-500/5 rounded-full blur-3xl pointer-events-none" />
+              <div className="flex justify-between items-center mb-8 pb-5 border-b border-white/6 relative z-10">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-orange-500/15 border border-orange-500/25 flex items-center justify-center">
+                    <svg className="w-4 h-4 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+                  </div>
+                  <h3 className="text-sm font-black text-slate-700 uppercase tracking-widest">Your Products</h3>
+                </div>
+                <span className="text-[9px] font-black bg-orange-500/10 border border-orange-500/20 px-3 py-1 rounded-full text-orange-400 uppercase tracking-widest">{products.length} items</span>
               </div>
               
               <button 
@@ -393,32 +407,44 @@ export function WholesalerDashboard() {
           {/* Receivables Summary Cards */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {receivablesLoading ? (
-              <div className="col-span-4 flex justify-center py-8"><div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary-600"></div></div>
+              <div className="col-span-4 flex justify-center py-8"><div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary-600" /></div>
             ) : receivables ? (
               <>
-                <div className="card p-7 bg-slate-100 border-none shadow-xl relative overflow-hidden">
-                  <div className="absolute top-0 right-0 w-20 h-20 bg-blue-500/5 rounded-full blur-2xl -mr-8 -mt-8"></div>
-                  <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-1">Total Pending</span>
-                  <span className="text-2xl font-black text-blue-600 tracking-tighter">₹{receivables.total_pending_amount.toLocaleString()}</span>
-                  <p className="text-[9px] text-slate-400 mt-2 font-medium italic">Outstanding across all retailers</p>
+                <div className="kpi-card" style={{'--kpi-accent': 'linear-gradient(90deg,#3b82f6,#2563eb)'} as React.CSSProperties}>
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-500/6 to-transparent rounded-[1.25rem] pointer-events-none" />
+                  <div className="w-8 h-8 rounded-lg bg-blue-500/15 border border-blue-500/20 flex items-center justify-center mb-3">
+                    <svg className="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                  </div>
+                  <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest block mb-1">Total Pending</span>
+                  <span className="stat-value text-blue-400">₹{receivables.total_pending_amount.toLocaleString()}</span>
+                  <p className="text-[9px] text-slate-500 mt-2 font-medium">Outstanding across all retailers</p>
                 </div>
-                <div className="card p-7 bg-slate-100 border-none shadow-xl relative overflow-hidden">
-                  <div className="absolute top-0 right-0 w-20 h-20 bg-primary-500/5 rounded-full blur-2xl -mr-8 -mt-8"></div>
-                  <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-1">Credit Orders</span>
-                  <span className="text-2xl font-black text-primary-600 tracking-tighter">{receivables.total_credit_orders}</span>
-                  <p className="text-[9px] text-slate-400 mt-2 font-medium italic">Open credit order obligations</p>
+                <div className="kpi-card" style={{'--kpi-accent': 'linear-gradient(90deg,#f97316,#ea580c)'} as React.CSSProperties}>
+                  <div className="absolute inset-0 bg-gradient-to-br from-orange-500/6 to-transparent rounded-[1.25rem] pointer-events-none" />
+                  <div className="w-8 h-8 rounded-lg bg-orange-500/15 border border-orange-500/20 flex items-center justify-center mb-3">
+                    <svg className="w-4 h-4 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+                  </div>
+                  <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest block mb-1">Credit Orders</span>
+                  <span className="stat-value text-orange-400">{receivables.total_credit_orders}</span>
+                  <p className="text-[9px] text-slate-500 mt-2 font-medium">Open credit obligations</p>
                 </div>
-                <div className="card p-7 bg-slate-100 border-none shadow-xl relative overflow-hidden">
-                  <div className="absolute top-0 right-0 w-20 h-20 bg-red-500/5 rounded-full blur-2xl -mr-8 -mt-8"></div>
-                  <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-1">Overdue Count</span>
-                  <span className={`text-2xl font-black tracking-tighter ${receivables.overdue_count > 0 ? 'text-red-600' : 'text-slate-400'}`}>{receivables.overdue_count}</span>
-                  <p className="text-[9px] text-slate-400 mt-2 font-medium italic">Payments past due date</p>
+                <div className="kpi-card" style={{'--kpi-accent': 'linear-gradient(90deg,#ef4444,#dc2626)'} as React.CSSProperties}>
+                  <div className="absolute inset-0 bg-gradient-to-br from-red-500/6 to-transparent rounded-[1.25rem] pointer-events-none" />
+                  <div className="w-8 h-8 rounded-lg bg-red-500/15 border border-red-500/20 flex items-center justify-center mb-3">
+                    <svg className="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                  </div>
+                  <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest block mb-1">Overdue Count</span>
+                  <span className={`stat-value ${receivables.overdue_count > 0 ? 'text-red-400' : 'text-slate-400'}`}>{receivables.overdue_count}</span>
+                  <p className="text-[9px] text-slate-500 mt-2 font-medium">Payments past due date</p>
                 </div>
-                <div className="card p-7 bg-slate-100 border-none shadow-xl relative overflow-hidden">
-                  <div className="absolute top-0 right-0 w-20 h-20 bg-orange-500/5 rounded-full blur-2xl -mr-8 -mt-8"></div>
-                  <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-1">Overdue Amount</span>
-                  <span className={`text-2xl font-black tracking-tighter ${receivables.overdue_amount > 0 ? 'text-orange-600' : 'text-slate-400'}`}>₹{receivables.overdue_amount.toLocaleString()}</span>
-                  <p className="text-[9px] text-slate-400 mt-2 font-medium italic">Total value of overdue payments</p>
+                <div className="kpi-card" style={{'--kpi-accent': 'linear-gradient(90deg,#f59e0b,#d97706)'} as React.CSSProperties}>
+                  <div className="absolute inset-0 bg-gradient-to-br from-amber-500/6 to-transparent rounded-[1.25rem] pointer-events-none" />
+                  <div className="w-8 h-8 rounded-lg bg-amber-500/15 border border-amber-500/20 flex items-center justify-center mb-3">
+                    <svg className="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                  </div>
+                  <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest block mb-1">Overdue Amount</span>
+                  <span className={`stat-value ${receivables.overdue_amount > 0 ? 'text-amber-400' : 'text-slate-400'}`}>₹{receivables.overdue_amount.toLocaleString()}</span>
+                  <p className="text-[9px] text-slate-500 mt-2 font-medium">Total value of overdue payments</p>
                 </div>
               </>
             ) : null}
@@ -426,31 +452,39 @@ export function WholesalerDashboard() {
 
           {/* Realized vs Exposure Summary */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="card p-10 bg-slate-100 border-none shadow-2xl relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-2xl -mr-16 -mt-16"></div>
-              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">Total Paid</span>
-              <span className="text-4xl font-black text-emerald-500 tracking-tighter">
+            <div className="kpi-card" style={{'--kpi-accent': 'linear-gradient(90deg,#10b981,#059669)'} as React.CSSProperties}>
+              <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/6 to-transparent rounded-[1.25rem] pointer-events-none" />
+              <div className="w-10 h-10 rounded-xl bg-emerald-500/15 border border-emerald-500/25 flex items-center justify-center mb-4">
+                <svg className="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              </div>
+              <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-1">Total Received</span>
+              <span className="stat-value text-emerald-400">
                 ₹{orders.reduce((acc, o) => acc + Number(o.amount_paid), 0).toFixed(2)}
               </span>
-              <p className="text-[10px] text-slate-500 mt-4 font-medium italic">Total money you have received from retailers.</p>
+              <p className="text-[10px] text-slate-500 mt-3 font-medium">Total money received from retailers.</p>
             </div>
             
-            <div className="card p-10 bg-slate-100 border-none shadow-2xl relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-red-500/5 rounded-full blur-2xl -mr-16 -mt-16"></div>
-              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">Total Due</span>
-              <span className="text-4xl font-black text-red-500 tracking-tighter">
+            <div className="kpi-card" style={{'--kpi-accent': 'linear-gradient(90deg,#ef4444,#dc2626)'} as React.CSSProperties}>
+              <div className="absolute inset-0 bg-gradient-to-br from-red-500/6 to-transparent rounded-[1.25rem] pointer-events-none" />
+              <div className="w-10 h-10 rounded-xl bg-red-500/15 border border-red-500/25 flex items-center justify-center mb-4">
+                <svg className="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              </div>
+              <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-1">Total Due</span>
+              <span className="stat-value text-red-400">
                 ₹{orders.reduce((acc, o) => acc + Math.max(0, Number(o.amount_due)), 0).toFixed(2)}
               </span>
-              <p className="text-[10px] text-slate-500 mt-4 font-medium italic">Money that retailers still need to pay you.</p>
+              <p className="text-[10px] text-slate-500 mt-3 font-medium">Money retailers still need to pay you.</p>
             </div>
           </div>
 
           {/* Aging Portfolio Table */}
-          <section className="card p-10 shadow-2xl">
-            <h3 className="text-base font-black text-slate-800 mb-8 flex items-center uppercase tracking-widest">
-              <svg className="w-5 h-5 mr-4 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
-              Retailer Payment History
-            </h3>
+          <section className="dash-section p-8">
+            <div className="flex items-center gap-3 mb-6 pb-4 border-b border-white/6">
+              <div className="w-8 h-8 rounded-lg bg-orange-500/15 border border-orange-500/25 flex items-center justify-center flex-shrink-0">
+                <svg className="w-4 h-4 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+              </div>
+              <h3 className="text-sm font-black text-slate-700 uppercase tracking-widest">Retailer Payment History</h3>
+            </div>
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-slate-100">
                 <thead>
@@ -516,9 +550,12 @@ export function WholesalerDashboard() {
       {activeTab === 'credit' && !loading && (
         <div className="animate-fade-in space-y-8">
           <div className="flex items-center justify-between mb-2">
-            <div>
-              <h3 className="text-xl font-black text-slate-800 uppercase tracking-tighter">Retailer Credit Overview</h3>
-              <p className="text-sm text-slate-400 font-medium italic mt-1">Scores based on how quickly retailers pay their bills.</p>
+            <div className="flex items-start gap-3">
+              <div className="w-1.5 h-9 rounded-full bg-gradient-to-b from-orange-400 to-orange-700 mt-0.5 flex-shrink-0" />
+              <div>
+                <h3 className="text-xl font-black text-slate-800 uppercase tracking-tighter">Retailer Credit Overview</h3>
+                <p className="text-sm text-slate-400 font-medium mt-0.5">Scores based on how quickly retailers pay their bills.</p>
+              </div>
             </div>
             <button
               onClick={loadCreditProfiles}

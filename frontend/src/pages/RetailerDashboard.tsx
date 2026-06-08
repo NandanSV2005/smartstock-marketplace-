@@ -363,54 +363,39 @@ export function RetailerDashboard() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fade-in">
-      <div className="md:flex md:items-center md:justify-between mb-8">
+      <div className="flex flex-wrap items-start justify-between mb-8 gap-6">
         <div className="flex-1 min-w-0">
-          <h2 className="text-2xl font-black leading-7 text-slate-800 sm:text-3xl sm:truncate uppercase tracking-tighter">
-            Retailer Portal
-          </h2>
-          <p className="mt-1 text-sm text-slate-400 font-medium italic">
+          <div className="flex items-center gap-3 mb-1.5">
+            <div className="w-1.5 h-9 rounded-full bg-gradient-to-b from-orange-400 to-orange-700 shadow-md shadow-orange-500/40 flex-shrink-0" />
+            <h2 className="text-2xl font-black text-slate-800 sm:text-3xl uppercase tracking-tighter">
+              Retailer Portal
+            </h2>
+          </div>
+          <p className="text-sm text-slate-400 font-medium ml-5">
             Manage inventory, optimize ordering, and receive SmartStock AI insights.
           </p>
         </div>
-        <div className="mt-4 flex md:mt-0 md:ml-4 space-x-2">
-          <button
-            onClick={() => { setActiveTab('dashboard'); navigate('/retailer/dashboard'); }}
-            className={`px-4 py-2 text-sm font-bold rounded-xl transition-all ${activeTab === 'dashboard' ? 'bg-primary-600 text-white shadow-lg shadow-primary-500/20' : 'glass text-slate-400 border-none hover:bg-white/5'}`}
-          >
+        <div className="flex flex-wrap gap-1.5 items-center">
+          <button onClick={() => { setActiveTab('dashboard'); navigate('/retailer/dashboard'); }} className={`tab-pill${activeTab === 'dashboard' ? ' active' : ''}`}>
             Dashboard
           </button>
-          <button
-            onClick={() => { setActiveTab('marketplace'); navigate('/retailer/dashboard'); }}
-            className={`px-4 py-2 text-sm font-bold rounded-xl transition-all ${activeTab === 'marketplace' ? 'bg-primary-600 text-white shadow-lg shadow-primary-500/20' : 'glass text-slate-400 border-none hover:bg-white/5'}`}
-          >
+          <button onClick={() => { setActiveTab('marketplace'); navigate('/retailer/dashboard'); }} className={`tab-pill${activeTab === 'marketplace' ? ' active' : ''}`}>
             Marketplace
           </button>
-          <button
-            onClick={() => { setActiveTab('cart'); navigate('/retailer/dashboard'); }}
-            className={`px-4 py-2 text-sm font-bold rounded-xl transition-all flex items-center ${activeTab === 'cart' ? 'bg-primary-600 text-white shadow-lg shadow-primary-500/20' : 'glass text-slate-400 border-none hover:bg-white/5'}`}
-          >
-            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-            Cart ({cart.data.items.length})
+          <button onClick={() => { setActiveTab('cart'); navigate('/retailer/dashboard'); }} className={`tab-pill${activeTab === 'cart' ? ' active' : ''}`}>
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+            Cart {cart.data.items.length > 0 && <span className="ml-1 bg-white/20 rounded-full px-1.5 py-0.5 text-[9px]">{cart.data.items.length}</span>}
           </button>
-          <button
-            onClick={() => { setActiveTab('inventory'); navigate('/retailer/dashboard'); }}
-            className={`px-4 py-2 text-sm font-bold rounded-xl transition-all flex items-center ${activeTab === 'inventory' ? 'bg-primary-600 text-white shadow-lg shadow-primary-500/20' : 'glass text-slate-400 border-none hover:bg-white/5'}`}
-          >
-            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+          <button onClick={() => { setActiveTab('inventory'); navigate('/retailer/dashboard'); }} className={`tab-pill${activeTab === 'inventory' ? ' active' : ''}`}>
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
             Inventory
           </button>
-          <button
-            onClick={() => { setActiveTab('ledger'); navigate('/retailer/dashboard'); }}
-            className={`px-4 py-2 text-sm font-bold rounded-xl transition-all flex items-center ${activeTab === 'ledger' ? 'bg-primary-600 text-white shadow-lg shadow-primary-500/20' : 'glass text-slate-400 border-none hover:bg-white/5'}`}
-          >
-            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+          <button onClick={() => { setActiveTab('ledger'); navigate('/retailer/dashboard'); }} className={`tab-pill${activeTab === 'ledger' ? ' active' : ''}`}>
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
             Ledger
           </button>
-          <button
-            onClick={() => navigate('/sales/record')}
-            className={`px-4 py-2 text-sm font-bold rounded-xl transition-all flex items-center ${activeTab === 'sales' ? 'bg-primary-600 text-white shadow-lg shadow-primary-500/20' : 'glass text-slate-400 border-none hover:bg-white/5'}`}
-          >
-            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          <button onClick={() => navigate('/sales/record')} className={`tab-pill${activeTab === 'sales' ? ' active' : ''}`}>
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
             Sales
           </button>
           
@@ -457,33 +442,65 @@ export function RetailerDashboard() {
 
           {/* Financial Overview KPIs */}
           <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-2">
-            <div className="bg-[#0f172a] rounded-2xl p-6 shadow-xl border border-white/10 relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-24 h-24 bg-primary-500/20 rounded-full blur-xl -mr-10 -mt-10"></div>
-              <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 relative z-10">Monthly Sales</h4>
-              <p className="text-3xl font-black text-white relative z-10">₹{kpis.data?.total_sales_revenue?.toLocaleString() || 0}</p>
+            {/* Monthly Sales */}
+            <div className="kpi-card stagger-1 animate-fade-in" style={{'--kpi-accent': 'linear-gradient(90deg,#ff6b00,#ea580c)'} as React.CSSProperties}>
+              <div className="absolute inset-0 bg-gradient-to-br from-orange-500/6 to-transparent rounded-[1.25rem] pointer-events-none" />
+              <div className="flex items-start justify-between mb-4 relative z-10">
+                <div className="w-10 h-10 rounded-xl bg-orange-500/15 border border-orange-500/25 flex items-center justify-center shadow-inner">
+                  <svg className="w-5 h-5 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+                </div>
+                <span className="text-[9px] font-black uppercase tracking-wider text-emerald-400 bg-emerald-400/10 px-2 py-1 rounded-full border border-emerald-400/15">Revenue</span>
+              </div>
+              <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1 relative z-10">Monthly Sales</p>
+              <p className="stat-value text-white relative z-10">₹{kpis.data?.total_sales_revenue?.toLocaleString() || 0}</p>
             </div>
-            <div className="bg-[#0f172a] rounded-2xl p-6 shadow-xl border border-white/10 relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/20 rounded-full blur-xl -mr-10 -mt-10"></div>
-              <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 relative z-10">Orders This Month</h4>
-              <p className="text-3xl font-black text-white relative z-10">{kpis.data?.orders_this_month || 0}</p>
+            {/* Orders This Month */}
+            <div className="kpi-card stagger-2 animate-fade-in" style={{'--kpi-accent': 'linear-gradient(90deg,#3b82f6,#2563eb)'} as React.CSSProperties}>
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/6 to-transparent rounded-[1.25rem] pointer-events-none" />
+              <div className="flex items-start justify-between mb-4 relative z-10">
+                <div className="w-10 h-10 rounded-xl bg-blue-500/15 border border-blue-500/25 flex items-center justify-center shadow-inner">
+                  <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+                </div>
+              </div>
+              <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1 relative z-10">Orders This Month</p>
+              <p className="stat-value text-white relative z-10">{kpis.data?.orders_this_month || 0}</p>
             </div>
-            <div className="bg-[#0f172a] rounded-2xl p-6 shadow-xl border border-white/10 relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-24 h-24 bg-red-500/20 rounded-full blur-xl -mr-10 -mt-10"></div>
-              <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 relative z-10">Outstanding Credit</h4>
-              <p className="text-3xl font-black text-red-400 relative z-10">₹{kpis.data?.outstanding_credit?.toLocaleString() || 0}</p>
+            {/* Outstanding Credit */}
+            <div className="kpi-card stagger-3 animate-fade-in" style={{'--kpi-accent': 'linear-gradient(90deg,#ef4444,#dc2626)'} as React.CSSProperties}>
+              <div className="absolute inset-0 bg-gradient-to-br from-red-500/6 to-transparent rounded-[1.25rem] pointer-events-none" />
+              <div className="flex items-start justify-between mb-4 relative z-10">
+                <div className="w-10 h-10 rounded-xl bg-red-500/15 border border-red-500/25 flex items-center justify-center shadow-inner">
+                  <svg className="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+                {(kpis.data?.outstanding_credit ?? 0) > 0 && <span className="text-[9px] font-black uppercase tracking-wider text-red-400 bg-red-400/10 px-2 py-1 rounded-full border border-red-400/15 animate-pulse-slow">Due</span>}
+              </div>
+              <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1 relative z-10">Outstanding Credit</p>
+              <p className="stat-value text-red-400 relative z-10">₹{kpis.data?.outstanding_credit?.toLocaleString() || 0}</p>
             </div>
-            <div className="bg-[#0f172a] rounded-2xl p-6 shadow-xl border border-white/10 relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-24 h-24 bg-orange-500/20 rounded-full blur-xl -mr-10 -mt-10"></div>
-              <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 relative z-10">Low Stock Items</h4>
-              <p className="text-3xl font-black text-orange-400 relative z-10">{kpis.data?.low_stock_count || 0}</p>
+            {/* Low Stock Items */}
+            <div className="kpi-card stagger-4 animate-fade-in" style={{'--kpi-accent': 'linear-gradient(90deg,#f59e0b,#d97706)'} as React.CSSProperties}>
+              <div className="absolute inset-0 bg-gradient-to-br from-amber-500/6 to-transparent rounded-[1.25rem] pointer-events-none" />
+              <div className="flex items-start justify-between mb-4 relative z-10">
+                <div className="w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-500/25 flex items-center justify-center shadow-inner">
+                  <svg className="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                </div>
+                {(kpis.data?.low_stock_count ?? 0) > 0 && <span className="text-[9px] font-black uppercase tracking-wider text-amber-400 bg-amber-400/10 px-2 py-1 rounded-full border border-amber-400/15 animate-pulse-slow">Alert</span>}
+              </div>
+              <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1 relative z-10">Low Stock Items</p>
+              <p className={`stat-value relative z-10 ${(kpis.data?.low_stock_count ?? 0) > 0 ? 'text-amber-400' : 'text-white'}`}>{kpis.data?.low_stock_count || 0}</p>
             </div>
           </div>
 
           {/* Charts Section */}
           <div className="lg:col-span-3 grid grid-cols-1 lg:grid-cols-2 gap-6 mb-2">
             {/* Sales Trend Chart */}
-            <div className="bg-[#0f172a] rounded-2xl p-6 shadow-xl border border-white/10">
-              <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-6">Sales Trend (30 Days)</h4>
+            <div className="dash-section p-6">
+              <div className="flex items-center gap-2.5 mb-6">
+                <div className="w-7 h-7 rounded-lg bg-blue-500/15 border border-blue-500/20 flex items-center justify-center flex-shrink-0">
+                  <svg className="w-3.5 h-3.5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/></svg>
+                </div>
+                <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400">Sales Trend (30 Days)</h4>
+              </div>
               <div className="h-64">
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={salesTrend.data} margin={{ top: 5, right: 0, left: -20, bottom: 0 }}>
@@ -507,8 +524,13 @@ export function RetailerDashboard() {
             </div>
 
             {/* Inventory Levels Chart */}
-            <div className="bg-[#0f172a] rounded-2xl p-6 shadow-xl border border-white/10">
-              <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-6">Critical Inventory Levels</h4>
+            <div className="dash-section p-6">
+              <div className="flex items-center gap-2.5 mb-6">
+                <div className="w-7 h-7 rounded-lg bg-amber-500/15 border border-amber-500/20 flex items-center justify-center flex-shrink-0">
+                  <svg className="w-3.5 h-3.5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                </div>
+                <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400">Critical Inventory Levels</h4>
+              </div>
               <div className="h-64">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={inventoryLevels.data} margin={{ top: 5, right: 0, left: -20, bottom: 0 }}>
@@ -528,19 +550,25 @@ export function RetailerDashboard() {
           </div>
 
           {/* SmartStock AI Block — Real-Time Insights with Reorder Now */}
-          <section className="card lg:col-span-3 bg-gradient-to-br from-primary-900 to-slate-100 border-none p-6 text-white shadow-2xl relative overflow-hidden group">
-            <div className="absolute -right-12 -top-12 w-48 h-48 bg-primary-600/20 rounded-full blur-3xl group-hover:bg-primary-600/30 transition-all"></div>
-            <h3 className="text-lg font-black text-white mb-4 flex items-center relative z-10 uppercase tracking-widest">
-              <svg className="w-6 h-6 mr-2 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-              Smart Stock Assistant
+          <section className="lg:col-span-3 relative overflow-hidden rounded-2xl p-6 text-white shadow-2xl group border border-white/8" style={{background: 'linear-gradient(135deg, #1c0f0a 0%, #0c0c0e 60%, #0f172a 100%)'}}>
+            <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 via-transparent to-blue-500/5 pointer-events-none" />
+            <div className="absolute -right-16 -top-16 w-56 h-56 bg-orange-500/15 rounded-full blur-3xl group-hover:bg-orange-500/25 transition-all duration-700" />
+            <div className="absolute -left-8 -bottom-8 w-32 h-32 bg-primary-600/10 rounded-full blur-2xl" />
+            <div className="flex items-center justify-between mb-5 relative z-10">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-orange-500/20 border border-orange-500/30 flex items-center justify-center shadow-inner">
+                  <svg className="w-5 h-5 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                </div>
+                <h3 className="text-base font-black text-white uppercase tracking-widest">Smart Stock Assistant</h3>
+              </div>
               <button
                 onClick={handleGenerateInsights}
-                className="ml-auto text-[10px] bg-white/5 hover:bg-white/10 px-4 py-1.5 rounded-full border border-white/10 transition-all font-black uppercase tracking-widest flex items-center"
+                className="text-[10px] bg-white/8 hover:bg-white/15 px-4 py-2 rounded-full border border-white/15 transition-all font-black uppercase tracking-widest flex items-center gap-1.5 text-white/80 hover:text-white"
               >
-                <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
                 Update Alerts
               </button>
-            </h3>
+            </div>
             {realtimeInsights.loading ? (
               <p className="text-sm text-primary-200 animate-pulse relative z-10 font-medium italic">Checking your stock levels...</p>
             ) : realtimeInsights.error ? (
@@ -608,11 +636,13 @@ export function RetailerDashboard() {
             )}
           </section>
 
-          <section className="card p-6 border-t-2 border-red-500/50">
-            <h3 className="text-base font-black text-slate-800 mb-6 border-b border-white/5 pb-4 flex items-center uppercase tracking-widest">
-              <svg className="w-5 h-5 mr-3 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-              Low Stock Warnings
-            </h3>
+          <section className="dash-section p-6">
+            <div className="flex items-center gap-3 mb-6 pb-4 border-b border-white/6">
+              <div className="w-8 h-8 rounded-lg bg-red-500/15 border border-red-500/25 flex items-center justify-center flex-shrink-0">
+                <svg className="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+              </div>
+              <h3 className="text-sm font-black text-slate-700 uppercase tracking-widest">Low Stock Warnings</h3>
+            </div>
             {inventory.loading ? (
               <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 animate-pulse">Checking Stock...</p>
             ) : inventory.error ? (
@@ -641,11 +671,13 @@ export function RetailerDashboard() {
             )}
           </section>
 
-          <section className="card p-6 lg:col-span-2 border-t-2 border-primary-500/50 shadow-2xl">
-            <h3 className="text-base font-black text-slate-800 mb-6 border-b border-white/5 pb-4 flex items-center uppercase tracking-widest">
-              <svg className="w-5 h-5 mr-3 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
-              Recent Orders
-            </h3>
+          <section className="dash-section p-6 lg:col-span-2">
+            <div className="flex items-center gap-3 mb-6 pb-4 border-b border-white/6">
+              <div className="w-8 h-8 rounded-lg bg-orange-500/15 border border-orange-500/25 flex items-center justify-center flex-shrink-0">
+                <svg className="w-4 h-4 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+              </div>
+              <h3 className="text-sm font-black text-slate-700 uppercase tracking-widest">Recent Orders</h3>
+            </div>
             {orders.loading ? (
               <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 animate-pulse">Loading Orders...</p>
             ) : orders.error ? (
@@ -684,16 +716,21 @@ export function RetailerDashboard() {
       )}
 
       {activeTab === 'marketplace' && (
-        <div className="card p-10 bg-slate-100 border-none shadow-2xl relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-primary-600/5 rounded-full blur-3xl -mr-48 -mt-48"></div>
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12 relative z-10">
-            <div>
-              <h3 className="text-2xl font-black text-slate-800 uppercase tracking-tighter">Supplier Product List</h3>
-            <span className="text-[10px] font-black bg-primary-600 px-4 py-1.5 rounded-full text-white uppercase tracking-widest shadow-lg shadow-primary-500/20">{marketplace.data.length} Items Available</span>
+        <div className="dash-section p-8 relative">
+          <div className="absolute top-0 right-0 w-80 h-80 bg-orange-500/4 rounded-full blur-3xl -mr-40 -mt-40 pointer-events-none" />
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10 relative z-10">
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-xl bg-orange-500/15 border border-orange-500/25 flex items-center justify-center">
+                <svg className="w-5 h-5 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+              </div>
+              <div>
+                <h3 className="text-xl font-black text-slate-800 uppercase tracking-tighter">Supplier Marketplace</h3>
+                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{marketplace.data.length} Products Available</span>
+              </div>
             </div>
-            <div className="flex items-center space-x-2 glass p-2 rounded-2xl">
-              <span className="text-[10px] font-black text-slate-400 px-4 uppercase tracking-widest">Exchange Status</span>
-              <span className="badge badge-green px-6 border-none shadow-lg shadow-secondary-500/10">Active</span>
+            <div className="flex items-center gap-2 glass px-4 py-2 rounded-xl">
+              <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest">Exchange Active</span>
             </div>
           </div>
 
@@ -876,30 +913,31 @@ export function RetailerDashboard() {
 
       {activeTab === 'inventory' && (
               <div className="animate-fade-in space-y-6">
-                <div className="flex justify-between items-center mb-6">
-                  <h3 className="text-2xl font-black text-slate-800 uppercase tracking-tighter">Current Inventory</h3>
-            <div className="flex items-center gap-4">
-              <span className="text-[10px] font-black bg-white/50 px-4 py-1.5 rounded-full text-primary-600 uppercase tracking-widest border border-white/20">{inventory.data.length} Items</span>
-              <button 
-                onClick={() => setShowAddInventory(true)}
-                className="bg-primary-600 text-white text-[10px] font-black uppercase tracking-widest px-6 py-2 rounded-xl shadow-lg shadow-primary-500/20 hover:bg-primary-500 transition-all flex items-center gap-2"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"/></svg>
-                Add Item
-              </button>
-            </div>
+                <div className="flex flex-wrap justify-between items-center mb-6 gap-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-1.5 h-8 rounded-full bg-gradient-to-b from-orange-400 to-orange-700 flex-shrink-0" />
+                    <h3 className="text-2xl font-black text-slate-800 uppercase tracking-tighter">Current Inventory</h3>
+                    <span className="text-[9px] font-black bg-orange-500/10 border border-orange-500/20 px-3 py-1 rounded-full text-orange-400 uppercase tracking-widest">{inventory.data.length} Items</span>
+                  </div>
+                  <button
+                    onClick={() => setShowAddInventory(true)}
+                    className="btn-primary text-[10px] font-black uppercase tracking-widest px-5 py-2.5 flex items-center gap-2"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"/></svg>
+                    Add Item
+                  </button>
                 </div>
 
-                <div className="card overflow-hidden border-none shadow-2xl">
+                <div className="dash-section overflow-hidden">
                   <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-white/5">
-                      <thead className="bg-slate-100">
+                    <table className="min-w-full premium-table">
+                      <thead>
                         <tr>
-                          <th className="px-6 py-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">Asset Name</th>
-                          <th className="px-6 py-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">Classification</th>
-                          <th className="px-6 py-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">Current Volume</th>
-                          <th className="px-6 py-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">Threshold</th>
-                          <th className="px-6 py-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">Health</th>
+                          <th className="text-left">Product</th>
+                          <th className="text-left">Category</th>
+                          <th className="text-left">Stock</th>
+                          <th className="text-left">Reorder Level</th>
+                          <th className="text-left">Status</th>
                         </tr>
                       </thead>
                       <tbody className="bg-white/2 divide-y divide-white/5">
@@ -996,9 +1034,12 @@ export function RetailerDashboard() {
       {activeTab === 'ledger' && (
         <div className="animate-fade-in space-y-8">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-            <div>
-              <h3 className="text-3xl font-black text-slate-800 uppercase tracking-tighter mb-2">Credit Ledger</h3>
-              <p className="text-sm text-slate-400 font-medium italic">Financial reconciliation and over-the-horizon settlement tracking</p>
+            <div className="flex items-start gap-3">
+              <div className="w-1.5 h-10 rounded-full bg-gradient-to-b from-red-400 to-red-700 mt-1 flex-shrink-0" />
+              <div>
+                <h3 className="text-3xl font-black text-slate-800 uppercase tracking-tighter mb-1">Credit Ledger</h3>
+                <p className="text-sm text-slate-400 font-medium">Financial reconciliation and settlement tracking</p>
+              </div>
             </div>
             <div className="flex items-center space-x-4">
               <div className="glass p-4 rounded-2xl border-none shadow-xl">
