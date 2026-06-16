@@ -1,0 +1,29 @@
+services:
+  # Backend Web Service (Django)
+  - type: web
+    name: smartstock-backend
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: cd smartstock_backend && python manage.py migrate && python manage.py runserver 0.0.0.0:$PORT
+    envVars:
+      - key: DEBUG
+        value: "True"
+
+  # Frontend Static Site (React/Vite)
+  - type: web
+    name: smartstock-frontend
+    env: static
+    buildCommand: cd frontend && npm install && npm run build
+    publishPath: frontend/dist
+    envVars:
+      - key: VITE_API_BASE_URL
+        fromService:
+          type: web
+          name: smartstock-backend
+          property: url
+          path: /api/v1
+      - key: VITE_BACKEND_URL
+        fromService:
+          type: web
+          name: smartstock-backend
+          property: url
