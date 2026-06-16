@@ -17,13 +17,6 @@ services:
     staticPublishPath: frontend/dist
     envVars:
       - key: VITE_API_BASE_URL
-        fromService:
-          type: web
-          name: smartstock-backend
-          property: url
-          path: /api/v1
+        value: https://smartstock-backend.onrender.com/api/v1
       - key: VITE_BACKEND_URL
-        fromService:
-          type: web
-          name: smartstock-backend
-          property: url
+        value: https://smartstock-backend.onrender.com
