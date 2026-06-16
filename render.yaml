@@ -5,7 +5,7 @@ services:
     env: python
     plan: free
     buildCommand: pip install -r requirements.txt
-    startCommand: cd smartstock_backend && python manage.py migrate && python manage.py runserver 0.0.0.0:$PORT
+    startCommand: cd smartstock_backend && python manage.py migrate && gunicorn smartstock_backend.wsgi:application --bind 0.0.0.0:$PORT
     envVars:
       - key: DEBUG
         value: "True"
