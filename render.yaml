@@ -10,9 +10,8 @@ services:
         value: "True"
 
   # Frontend Static Site (React/Vite)
-  - type: web
+  - type: static
     name: smartstock-frontend
-    env: static
     buildCommand: cd frontend && npm install && npm run build
     publishPath: frontend/dist
     envVars:
