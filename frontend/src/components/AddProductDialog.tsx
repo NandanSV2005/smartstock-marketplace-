@@ -97,19 +97,19 @@ export default function AddProductDialog({ isOpen, onClose, onSuccess }: AddProd
   return (
     <div className="fixed inset-0 z-[100] overflow-y-auto bg-black/60 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 animate-fade-in" role="dialog" aria-modal="true" onClick={onClose}>
       <div 
-        className="bg-white dark:bg-[#0a0a0a] rounded-2xl shadow-xl border border-orange-200/50 dark:border-orange-500/20 max-w-4xl w-full p-6 sm:p-8 animate-scale-in relative h-auto overflow-y-auto max-h-[90vh]"
+        className="bg-[var(--card-bg)] rounded-3xl shadow-xl border border-[var(--card-border)] max-w-4xl w-full p-6 sm:p-8 animate-scale-in relative h-auto overflow-y-auto max-h-[90vh]"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between items-start mb-6">
           <div>
-            <h3 className="text-xl font-semibold text-orange-950 dark:text-orange-100 mb-1 tracking-tight">
+            <h3 className="text-xl font-semibold text-slate-800 mb-1 tracking-tight">
               Add New Product
             </h3>
-            <p className="text-sm text-orange-700/70 dark:text-orange-300/70">Initialize a new product record in the marketplace directory.</p>
+            <p className="text-sm text-slate-500">Initialize a new product record in the marketplace directory.</p>
           </div>
           <button 
             onClick={onClose}
-            className="p-1.5 rounded-lg hover:bg-orange-100 dark:hover:bg-orange-950/30 text-orange-500 hover:text-orange-750 transition-colors"
+            className="p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-600 transition-colors"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
           </button>
@@ -125,23 +125,23 @@ export default function AddProductDialog({ isOpen, onClose, onSuccess }: AddProd
         <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Section 1: Basic Info */}
           <div className="lg:col-span-2 space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-orange-50/50 dark:bg-orange-950/10 p-5 rounded-xl border border-orange-100 dark:border-orange-950/50 shadow-sm">
-              <h4 className="md:col-span-2 text-xs font-semibold text-orange-600 dark:text-orange-400 uppercase tracking-wider mb-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-[var(--color-slate-50)] p-5 rounded-xl border border-[var(--card-border)] shadow-sm">
+              <h4 className="md:col-span-2 text-xs font-semibold uppercase tracking-widest text-primary-500 mb-2">
                 Product Details
               </h4>
               <div className="md:col-span-2">
-                <label className="block text-xs font-medium text-orange-850 dark:text-orange-300 mb-1.5">Product Name</label>
-                <input type="text" required placeholder="e.g. Premium Basmati Rice" className="input-field shadow-inset-tactile focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20" value={productName} onChange={(e) => setProductName(e.target.value)} />
+                <label className="block text-xs font-semibold uppercase tracking-widest text-primary-500 mb-1.5">Product Name</label>
+                <input type="text" required placeholder="e.g. Premium Basmati Rice" className="input-field shadow-inset-tactile focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500" value={productName} onChange={(e) => setProductName(e.target.value)} />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-orange-850 dark:text-orange-300 mb-1.5">Brand</label>
-                <input type="text" placeholder="e.g. India Gate" className="input-field shadow-inset-tactile focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20" value={brand} onChange={(e) => setBrand(e.target.value)} />
+                <label className="block text-xs font-semibold uppercase tracking-widest text-primary-500 mb-1.5">Brand</label>
+                <input type="text" placeholder="e.g. India Gate" className="input-field shadow-inset-tactile focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500" value={brand} onChange={(e) => setBrand(e.target.value)} />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-orange-850 dark:text-orange-300 mb-1.5">Category</label>
-                <select required className="input-field appearance-none shadow-inset-tactile focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20" value={categoryId} onChange={(e) => setCategoryId(e.target.value)}>
+                <label className="block text-xs font-semibold uppercase tracking-widest text-primary-500 mb-1.5">Category</label>
+                <select required className="input-field appearance-none shadow-inset-tactile focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500" value={categoryId} onChange={(e) => setCategoryId(e.target.value)}>
                   {categories.map((c) => (
                     <option key={c.id} value={c.id}>{c.name}</option>
                   ))}
@@ -149,50 +149,50 @@ export default function AddProductDialog({ isOpen, onClose, onSuccess }: AddProd
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-orange-850 dark:text-orange-300 mb-1.5">Stock Unit</label>
-                <input type="text" required className="input-field shadow-inset-tactile focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20" placeholder="e.g. piece, kg, pack" value={unit} onChange={(e) => setUnit(e.target.value)} />
+                <label className="block text-xs font-semibold uppercase tracking-widest text-primary-500 mb-1.5">Stock Unit</label>
+                <input type="text" required className="input-field shadow-inset-tactile focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500" placeholder="e.g. piece, kg, pack" value={unit} onChange={(e) => setUnit(e.target.value)} />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-orange-850 dark:text-orange-300 mb-1.5">Transit Time (Days)</label>
-                <input type="number" required min="1" className="input-field shadow-inset-tactile focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20" value={leadTimeDays} onChange={(e) => setLeadTimeDays(e.target.value)} />
+                <label className="block text-xs font-semibold uppercase tracking-widest text-primary-500 mb-1.5">Transit Time (Days)</label>
+                <input type="number" required min="1" className="input-field shadow-inset-tactile focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500" value={leadTimeDays} onChange={(e) => setLeadTimeDays(e.target.value)} />
               </div>
             </div>
 
             {/* Section 2: Pricing & Stock */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-orange-50/50 dark:bg-orange-950/10 p-5 rounded-xl border border-orange-100 dark:border-orange-950/50 shadow-sm">
-              <h4 className="md:col-span-3 text-xs font-semibold text-orange-600 dark:text-orange-400 uppercase tracking-wider mb-2">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-[var(--color-slate-50)] p-5 rounded-xl border border-[var(--card-border)] shadow-sm">
+              <h4 className="md:col-span-3 text-xs font-semibold uppercase tracking-widest text-primary-500 mb-2">
                 Pricing & Inventory
               </h4>
               <div>
-                <label className="block text-xs font-medium text-orange-850 dark:text-orange-300 mb-1.5">Trade Price (₹)</label>
-                <input type="number" step="0.01" required className="input-field shadow-inset-tactile focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 text-orange-600 font-semibold" value={wholesalePrice} onChange={(e) => setWholesalePrice(e.target.value)} />
+                <label className="block text-xs font-semibold uppercase tracking-widest text-primary-500 mb-1.5">Trade Price (₹)</label>
+                <input type="number" step="0.01" required className="input-field shadow-inset-tactile focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 font-semibold" value={wholesalePrice} onChange={(e) => setWholesalePrice(e.target.value)} />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-orange-850 dark:text-orange-300 mb-1.5">MRP (₹)</label>
-                <input type="number" step="0.01" className="input-field shadow-inset-tactile focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 font-medium" value={mrp} onChange={(e) => setMrp(e.target.value)} />
+                <label className="block text-xs font-semibold uppercase tracking-widest text-primary-500 mb-1.5">MRP (₹)</label>
+                <input type="number" step="0.01" className="input-field shadow-inset-tactile focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 font-medium" value={mrp} onChange={(e) => setMrp(e.target.value)} />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-orange-850 dark:text-orange-300 mb-1.5">Min Order Qty</label>
-                <input type="number" required min="1" className="input-field shadow-inset-tactile focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 font-medium" value={minOrderQty} onChange={(e) => setMinOrderQty(e.target.value)} />
+                <label className="block text-xs font-semibold uppercase tracking-widest text-primary-500 mb-1.5">Min Order Qty</label>
+                <input type="number" required min="1" className="input-field shadow-inset-tactile focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 font-medium" value={minOrderQty} onChange={(e) => setMinOrderQty(e.target.value)} />
               </div>
 
               <div className="md:col-span-3">
-                <label className="block text-xs font-medium text-orange-850 dark:text-orange-300 mb-1.5">Initial Stock Level</label>
-                <input type="number" required min="0" className="input-field shadow-inset-tactile focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 font-medium" value={availableStock} onChange={(e) => setAvailableStock(e.target.value)} />
+                <label className="block text-xs font-semibold uppercase tracking-widest text-primary-500 mb-1.5">Initial Stock Level</label>
+                <input type="number" required min="0" className="input-field shadow-inset-tactile focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 font-medium" value={availableStock} onChange={(e) => setAvailableStock(e.target.value)} />
               </div>
             </div>
           </div>
 
           <div className="space-y-6 flex flex-col justify-between">
-            <div className="bg-orange-50/50 dark:bg-orange-950/10 p-5 rounded-xl border border-orange-100 dark:border-orange-950/50 shadow-sm flex-1 flex flex-col">
-              <h4 className="text-xs font-semibold text-orange-600 dark:text-orange-400 uppercase tracking-wider mb-4">
+            <div className="bg-[var(--color-slate-50)] p-5 rounded-xl border border-[var(--card-border)] shadow-sm flex-1 flex flex-col">
+              <h4 className="text-xs font-semibold uppercase tracking-widest text-primary-500 mb-4">
                 Product Image
               </h4>
               
-              <div className="flex-1 flex flex-col items-center justify-center border border-dashed border-orange-200 dark:border-orange-900/50 rounded-xl p-6 bg-white dark:bg-[#0a0a0a] hover:border-orange-500 transition-all cursor-pointer relative overflow-hidden min-h-[160px]">
+              <div className="flex-1 flex flex-col items-center justify-center border-2 border-dashed border-[var(--color-slate-200)] rounded-xl p-6 bg-[var(--color-slate-100)] hover:border-primary-500 transition-colors duration-[var(--nb-duration-fast)] ease-[var(--nb-ease-smooth)] cursor-pointer relative overflow-hidden min-h-[160px]">
                 <input 
                   type="file" 
                   accept="image/*"
@@ -205,18 +205,18 @@ export default function AddProductDialog({ isOpen, onClose, onSuccess }: AddProd
                 />
                 
                 <div className="text-center">
-                  <div className="p-3 bg-orange-100 dark:bg-orange-950/30 text-orange-600 rounded-full mb-3 inline-block">
+                  <div className="p-3 bg-slate-200 dark:bg-slate-800 text-primary-500 rounded-full mb-3 inline-block">
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                   </div>
-                  <p className="text-xs font-medium text-orange-850 dark:text-orange-300">Upload Image</p>
-                  <p className="text-[11px] text-orange-400/80 mt-1">PNG, JPG up to 5MB</p>
+                  <p className="text-xs font-medium text-slate-800">Upload Image</p>
+                  <p className="text-[11px] text-slate-400 mt-1">PNG, JPG up to 5MB</p>
                 </div>
 
                 {imageFile && (
-                  <div className="absolute inset-1.5 bg-orange-100/90 rounded flex flex-col items-center justify-center p-4 border border-orange-200 animate-scale-in">
+                  <div className="absolute inset-1.5 bg-slate-100/95 rounded flex flex-col items-center justify-center p-4 border border-slate-200 animate-scale-in">
                     <svg className="w-8 h-8 text-emerald-600 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    <p className="text-xs font-medium text-orange-950 truncate w-full text-center px-4">{imageFile.name}</p>
-                    <button type="button" onClick={(e) => { e.stopPropagation(); setImageFile(null); }} className="mt-3 text-xs font-medium text-rose-600 hover:text-rose-500 transition-colors">Discard</button>
+                    <p className="text-xs font-medium text-slate-800 truncate w-full text-center px-4">{imageFile.name}</p>
+                    <button type="button" onClick={(e) => { e.stopPropagation(); setImageFile(null); }} className="mt-3 text-xs font-medium text-rose-500 hover:text-rose-700 transition-colors">Discard</button>
                   </div>
                 )}
               </div>
