@@ -2,13 +2,15 @@ services:
   # Backend Web Service (Django)
   - type: web
     name: smartstock-backend
-    env: python
+    runtime: python
     plan: free
     buildCommand: pip install -r requirements.txt
-    startCommand: cd smartstock_backend && python manage.py migrate && gunicorn smartstock_backend.wsgi:application --bind 0.0.0.0:$PORT
+    startCommand: python smartstock_backend/manage.py migrate && gunicorn --chdir smartstock_backend smartstock_backend.wsgi:application --bind 0.0.0.0:$PORT
     envVars:
       - key: DEBUG
         value: "True"
+      - key: PYTHON_VERSION
+        value: 3.12.8
 
   # Frontend Static Site (React/Vite)
   - type: web
@@ -18,6 +20,12 @@ services:
     staticPublishPath: frontend/dist
     envVars:
       - key: VITE_API_BASE_URL
-        value: https://smartstock-backend.onrender.com/api/v1
+        fromService:
+          type: web
+          name: smartstock-backend
+          property: host
       - key: VITE_BACKEND_URL
-        value: https://smartstock-backend.onrender.com
+        fromService:
+          type: web
+          name: smartstock-backend
+          property: host

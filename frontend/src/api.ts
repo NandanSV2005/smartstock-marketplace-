@@ -1,5 +1,19 @@
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8001/api/v1';
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://127.0.0.1:8001';
+let rawApiUrl = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8001/api/v1';
+let rawBackendUrl = import.meta.env.VITE_BACKEND_URL || 'http://127.0.0.1:8001';
+
+if (rawApiUrl && !rawApiUrl.startsWith('http://') && !rawApiUrl.startsWith('https://')) {
+  rawApiUrl = `https://${rawApiUrl}`;
+  if (!rawApiUrl.endsWith('/api/v1') && !rawApiUrl.endsWith('/api/v1/')) {
+    rawApiUrl = `${rawApiUrl}/api/v1`;
+  }
+}
+
+if (rawBackendUrl && !rawBackendUrl.startsWith('http://') && !rawBackendUrl.startsWith('https://')) {
+  rawBackendUrl = `https://${rawBackendUrl}`;
+}
+
+const API_BASE_URL = rawApiUrl;
+const BACKEND_URL = rawBackendUrl;
 
 export type Role = 'retailer' | 'wholesaler' | 'admin';
 
