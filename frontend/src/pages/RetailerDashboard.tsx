@@ -12,8 +12,6 @@ import {
  getProducts,
  addInventoryItem,
  updateInventoryItem,
- payOutstanding,
- getPaymentHistory,
  createSale,
  getSalesHistory,
  getRetailerKPIs,
@@ -314,10 +312,6 @@ export function RetailerDashboard() {
    setReorderingId(null);
   }
  }
-
- const handleCheckout = () => {
-  navigate('/checkout/payment');
- };
 
  const handleMarkAsReceived = async (orderId: number) => {
   if (!accessToken) return;
