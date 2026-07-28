@@ -645,3 +645,53 @@ export async function getReceivablesSummary(accessToken: string): Promise<Receiv
     headers: { Authorization: `Bearer ${accessToken}` },
   });
 }
+
+// ─── Razorpay Payment API Calls ────────────────────────────────────────────
+
+export interface RazorpayOrderResponse {
+  razorpay_order_id: string;
+  amount: number;           // in paise
+  currency: string;
+  key_id: string;
+  cart_id?: number;
+}
+
+export async function createCartPaymentOrder(
+  accessToken: string,
+  cartId: number
+): Promise<RazorpayOrderResponse> {
+  return request<RazorpayOrderResponse>('/payments/create-order/cart', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${accessToken}` },
+    body: JSON.stringify({ cart_id: cartId }),
+  });
+}
+
+export async function createLedgerPaymentOrder(
+  accessToken: string,
+  amount: number
+): Promise<RazorpayOrderResponse> {
+  return request<RazorpayOrderResponse>('/payments/create-order/ledger', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${accessToken}` },
+    body: JSON.stringify({ amount }),
+  });
+}
+
+export async function verifyPayment(
+  accessToken: string,
+  payload: {
+    razorpay_order_id: string;
+    razorpay_payment_id: string;
+    razorpay_signature: string;
+    payment_type: 'cart' | 'ledger';
+    reference_id: number;
+  }
+): Promise<{ success: boolean; payment_id: string }> {
+  return request<{ success: boolean; payment_id: string }>('/payments/verify', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${accessToken}` },
+    body: JSON.stringify(payload),
+  });
+}
+

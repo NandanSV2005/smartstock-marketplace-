@@ -319,6 +319,196 @@ class PaymentViewSet(viewsets.ModelViewSet):
             'overdue_amount': float(overdue_amount),
         })
 
+    # =========================================================================
+    # PART 4: Razorpay Payment Gateway Integration
+    # =========================================================================
+
+    @action(detail=False, methods=["post"], url_path="create-order/cart")
+    def create_cart_order(self, request):
+        user = request.user
+        cart_id = request.data.get("cart_id")
+        
+        cart = None
+        if cart_id:
+            cart = Cart.objects.filter(id=cart_id).first()
+        if not cart and hasattr(user, "retailer_profile"):
+            cart = Cart.objects.filter(retailer=user.retailer_profile, status=Cart.Status.ACTIVE).first()
+            
+        if not cart or not cart.items.exists():
+            return Response({"detail": "Cart not found or empty"}, status=status.HTTP_400_BAD_REQUEST)
+            
+        total_amount = sum(item.quantity * item.unit_price_snapshot for item in cart.items.all())
+        if total_amount <= 0:
+            return Response({"detail": "Cart total must be greater than 0"}, status=status.HTTP_400_BAD_REQUEST)
+            
+        from payments.razorpay_service import create_razorpay_order, KEY_ID
+        receipt = f"cart_{cart.id}_{uuid.uuid4().hex[:8]}"
+        
+        try:
+            order_data = create_razorpay_order(
+                amount_rupees=float(total_amount),
+                receipt=receipt,
+                notes={
+                    "cart_id": str(cart.id),
+                    "user_id": str(user.id),
+                    "payment_type": "cart_checkout",
+                }
+            )
+        except Exception as e:
+            return Response({"detail": f"Razorpay order creation failed: {str(e)}"}, status=status.HTTP_502_BAD_GATEWAY)
+            
+        return Response({
+            "razorpay_order_id": order_data["id"],
+            "amount": order_data["amount"],
+            "currency": order_data["currency"],
+            "key_id": KEY_ID,
+            "cart_id": cart.id,
+        })
+
+    @action(detail=False, methods=["post"], url_path="create-order/ledger")
+    def create_ledger_order(self, request):
+        amount = request.data.get("amount", 0)
+        try:
+            amount = float(amount)
+        except (ValueError, TypeError):
+            return Response({"detail": "Invalid amount"}, status=status.HTTP_400_BAD_REQUEST)
+            
+        if amount <= 0:
+            return Response({"detail": "Amount must be greater than 0"}, status=status.HTTP_400_BAD_REQUEST)
+            
+        from payments.razorpay_service import create_razorpay_order, KEY_ID
+        receipt = f"ledger_{request.user.id}_{uuid.uuid4().hex[:8]}"
+        
+        try:
+            order_data = create_razorpay_order(
+                amount_rupees=amount,
+                receipt=receipt,
+                notes={
+                    "user_id": str(request.user.id),
+                    "payment_type": "ledger_clearance",
+                }
+            )
+        except Exception as e:
+            return Response({"detail": f"Razorpay order creation failed: {str(e)}"}, status=status.HTTP_502_BAD_GATEWAY)
+            
+        return Response({
+            "razorpay_order_id": order_data["id"],
+            "amount": order_data["amount"],
+            "currency": order_data["currency"],
+            "key_id": KEY_ID,
+        })
+
+    @action(detail=False, methods=["post"])
+    def verify(self, request):
+        data = request.data
+        razorpay_order_id = data.get("razorpay_order_id", "")
+        razorpay_payment_id = data.get("razorpay_payment_id", "")
+        razorpay_signature = data.get("razorpay_signature", "")
+        payment_type = data.get("payment_type", "")
+        reference_id = data.get("reference_id")
+        
+        from payments.razorpay_service import verify_payment_signature
+        is_valid = verify_payment_signature(
+            razorpay_order_id=razorpay_order_id,
+            razorpay_payment_id=razorpay_payment_id,
+            razorpay_signature=razorpay_signature,
+        )
+        
+        if not is_valid:
+            return Response(
+                {"detail": "Payment verification failed. Invalid signature."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+            
+        user = request.user
+        with transaction.atomic():
+            if payment_type == "cart":
+                retailer_profile = getattr(user, "retailer_profile", None)
+                cart = None
+                if reference_id:
+                    cart = Cart.objects.filter(id=reference_id).first()
+                if not cart and retailer_profile:
+                    cart = Cart.objects.filter(retailer=retailer_profile, status=Cart.Status.ACTIVE).first()
+                    
+                if cart and cart.items.exists() and retailer_profile:
+                    orders = process_cart_checkout(cart, retailer_profile, "Online Checkout (Razorpay)")
+                    for order in orders:
+                        order.payment_status = Order.PaymentStatus.PAID
+                        order.payment_method = Order.PaymentMethod.PAY_NOW
+                        order.amount_paid = order.total_amount
+                        order.amount_due = 0
+                        order.save()
+                        
+                        import random
+                        Payment.objects.create(
+                            order=order,
+                            payment_method=Payment.Method.PAY_NOW,
+                            total_amount=order.total_amount,
+                            amount_paid=order.total_amount,
+                            amount_due=0,
+                            status=Payment.Status.PAID,
+                            transaction_id=razorpay_payment_id or f"TXN{random.randint(1000000, 9999999)}"
+                        )
+            elif payment_type == "ledger":
+                if reference_id:
+                    payment_rec = Payment.objects.filter(id=reference_id).first()
+                    if payment_rec:
+                        payment_rec.amount_paid += payment_rec.amount_due
+                        payment_rec.amount_due = 0
+                        payment_rec.status = Payment.Status.PAID
+                        if razorpay_payment_id:
+                            payment_rec.transaction_id = razorpay_payment_id
+                        payment_rec.save()
+                        
+                        order = payment_rec.order
+                        order.amount_paid += order.amount_due
+                        order.amount_due = 0
+                        order.payment_status = Order.PaymentStatus.PAID
+                        order.save()
+                    else:
+                        order = Order.objects.filter(id=reference_id).first()
+                        if order:
+                            order.amount_paid = order.total_amount
+                            order.amount_due = 0
+                            order.payment_status = Order.PaymentStatus.PAID
+                            order.save()
+                            
+                            Payment.objects.filter(order=order).update(
+                                amount_paid=order.total_amount,
+                                amount_due=0,
+                                status=Payment.Status.PAID,
+                                transaction_id=razorpay_payment_id
+                            )
+                            
+        return Response({
+            "success": True,
+            "payment_id": razorpay_payment_id,
+            "message": "Payment verified and recorded successfully.",
+        })
+
+    @action(detail=False, methods=["post"], permission_classes=[permissions.AllowAny])
+    def webhook(self, request):
+        import hmac, hashlib
+        webhook_secret = os.getenv("RAZORPAY_WEBHOOK_SECRET", "")
+        received_sig = request.headers.get("X-Razorpay-Signature", "")
+        
+        if webhook_secret and received_sig:
+            expected_sig = hmac.new(
+                webhook_secret.encode(),
+                request.body,
+                hashlib.sha256
+            ).hexdigest()
+            if not hmac.compare_digest(expected_sig, received_sig):
+                return Response({"detail": "Invalid webhook signature"}, status=status.HTTP_400_BAD_REQUEST)
+                
+        event = request.data
+        if isinstance(event, dict) and event.get("event") == "payment.captured":
+            # Webhook processing logic fallback
+            pass
+            
+        return Response({"status": "ok"})
+
+
 
 # ============================================================================
 # Private helpers

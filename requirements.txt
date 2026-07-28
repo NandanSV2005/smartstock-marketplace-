@@ -8,3 +8,5 @@ PyMySQL==1.1.0
 cryptography==42.0.5
 Pillow>=10.3.0
 gunicorn>=22.0.0
+razorpay>=2.0.1
+python-dotenv>=1.0.1

@@ -41,6 +41,7 @@ import {
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../AuthContext';
+import { useRazorpay } from '../hooks/useRazorpay';
 
 interface DashboardState<T> {
  data: T;
@@ -80,6 +81,19 @@ export function RetailerDashboard() {
  const { accessToken } = useAuth();
  const navigate = useNavigate();
  const location = useLocation();
+
+ const { payCart, payLedger, loading: paymentLoading } = useRazorpay({
+  onSuccess: (paymentId) => {
+   alert(`Payment successful! Payment ID: ${paymentId}`);
+   cart.mutate();
+   orders.mutate();
+  },
+  onFailure: (err) => {
+   if (err !== 'Payment cancelled by user') {
+    alert(`Payment failed: ${err}`);
+   }
+  },
+ });
 
  const [salesSubTab, setSalesSubTab] = useState<'record' | 'history'>('record');
  const [showAddInventory, setShowAddInventory] = useState(false);
@@ -873,12 +887,25 @@ export function RetailerDashboard() {
            </div>
           </div>
           <button 
-           onClick={handleCheckout}
-           className="w-full btn-tactile-orange py-2.5 text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-tactile-primary cursor-pointer"
+           onClick={() => payCart(cart.data.id)}
+           disabled={paymentLoading || !cart.data.items?.length}
+           className="w-full btn-tactile-orange py-2.5 text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-tactile-primary cursor-pointer disabled:opacity-50"
           >
-           Proceed to Payment
-           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7-7 7"></path></svg>
+           {paymentLoading ? (
+            <>
+             <span className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" />
+             Processing...
+            </>
+           ) : (
+            <>
+             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+             </svg>
+             Pay ₹{cartTotal.toLocaleString('en-IN')}
+            </>
+           )}
           </button>
+
           <p className="text-[10px] text-slate-400 mt-4 text-center">Fulfillment terms are governed by Wholesaler agreements.</p>
          </div>
         </div>
@@ -1072,25 +1099,11 @@ export function RetailerDashboard() {
              <span className="text-sm font-bold text-rose-500 font-mono">₹{order.amount_due}</span>
             </div>
             <button 
-             onClick={async () => {
-              if (!accessToken) return;
-              try {
-               const payments = await getPaymentHistory(accessToken, order.id);
-               const pendingPayment = payments.find((p: any) => p.status !== 'paid');
-               if (pendingPayment) {
-                const res = await payOutstanding(accessToken, pendingPayment.id);
-                alert(`Settlement successful! Discount applied: ₹${res.discount_applied}`);
-                orders.mutate();
-               } else {
-                alert("Already settled or no payment record found.");
-               }
-              } catch (e: any) {
-               alert(e.message);
-              }
-             }}
-             className="btn-tactile-emerald text-xs font-bold uppercase tracking-wider px-4 py-2 flex items-center group shadow-tactile-emerald cursor-pointer"
+             onClick={() => payLedger(Number(order.amount_due), order.id)}
+             disabled={paymentLoading || Number(order.amount_due) <= 0}
+             className="btn-tactile-emerald text-xs font-bold uppercase tracking-wider px-4 py-2 flex items-center group shadow-tactile-emerald cursor-pointer disabled:opacity-50"
             >
-             Settle Line
+             {paymentLoading ? 'Opening payment...' : `Pay ₹${Number(order.amount_due).toLocaleString('en-IN')}`}
              <svg className="w-3.5 h-3.5 ml-2 group-hover:rotate-12 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
             </button>
            </div>
