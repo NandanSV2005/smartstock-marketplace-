@@ -10,3 +10,4 @@ Pillow>=10.3.0
 gunicorn>=22.0.0
 razorpay>=2.0.1
 python-dotenv>=1.0.1
+icrawler>=0.6.6

@@ -1,13 +1,22 @@
 import os
 import shutil
-from icrawler.builtin import BingImageCrawler
 from django.conf import settings
 from django.core.files import File
+
+try:
+    from icrawler.builtin import BingImageCrawler
+except ImportError:
+    BingImageCrawler = None
+
 
 def fetch_image_for_product(product_name, brand=""):
     """
     Search for a product image using Bing search and return a Django File object.
     """
+    if BingImageCrawler is None:
+        print("icrawler is not installed. Skipping auto image fetch.")
+        return None
+
     query = f"{product_name} {brand} product".strip()
     temp_dir = os.path.join(settings.BASE_DIR, 'temp_images')
     
@@ -16,7 +25,10 @@ def fetch_image_for_product(product_name, brand=""):
         
     # Clean up previous downloads in the temp dir if any
     for f in os.listdir(temp_dir):
-        os.remove(os.path.join(temp_dir, f))
+        try:
+            os.remove(os.path.join(temp_dir, f))
+        except Exception:
+            pass
         
     try:
         crawler = BingImageCrawler(storage={'root_dir': temp_dir}, log_level=50) # log_level=50 is CRITICAL (silence)
